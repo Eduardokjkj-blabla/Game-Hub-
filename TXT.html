@@ -3,1590 +3,1883 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 GameHub - Sua Plataforma de Jogos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>AXES IA - Plataforma Profissional de Inteligência Artificial</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
         :root {
-            --primary: #6c5ce7;
-            --primary-dark: #5b4cdb;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --bg-dark: #0a0a0f;
-            --bg-card: #16161f;
-            --bg-card-hover: #1e1e2a;
-            --text: #ffffff;
-            --text-muted: #a0a0b0;
-            --success: #00b894;
-            --danger: #e74c3c;
-            --warning: #fdcb6e;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #2a2a3a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
         }
-
+        
+        .light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+        
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
         }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        
+        .glass {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
         }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
+        
+        .light-mode .glass {
+            background: rgba(255,255,255,0.8);
         }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a25 100%);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(108, 92, 231, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            cursor: pointer;
+            background-clip: text;
         }
-
-        .logo-icon {
-            font-size: 2rem;
+        
+        .gradient-border {
+            position: relative;
+            background: var(--bg-secondary);
         }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
         }
-
-        .nav-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 16px;
+        
+        .glow {
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float { animation: float 3s ease-in-out infinite; }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 2s steps(40);
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+        
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        .CodeMirror {
+            height: 100% !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 13px;
+            background: transparent !important;
+        }
+        
+        .light-mode .CodeMirror {
+            background: #ffffff !important;
+        }
+        
+        .file-tree-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .file-tree-item.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-left: 2px solid var(--accent);
+        }
+        
+        .chat-message {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tab-active {
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .resize-handle {
+            cursor: col-resize;
+            background: var(--border);
+            transition: background 0.2s;
+        }
+        
+        .resize-handle:hover {
+            background: var(--accent);
+        }
+        
+        .preview-frame {
+            background: #ffffff;
             border-radius: 8px;
+        }
+        
+        .status-online { color: var(--success); }
+        .status-warning { color: var(--warning); }
+        .status-error { color: var(--error); }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .terminal-line::before {
+            content: '$ ';
+            color: var(--success);
+        }
+        
+        .version-badge {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .context-menu {
+            position: fixed;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+            z-index: 1000;
+            min-width: 160px;
+        }
+        
+        .context-menu-item {
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
-        }
-
-        .nav-link:hover {
-            color: var(--text);
-            background: rgba(108, 92, 231, 0.2);
-        }
-
-        .nav-link.active {
-            color: var(--primary);
-            background: rgba(108, 92, 231, 0.15);
-        }
-
-        .btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 10px;
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 8px;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        
+        .context-menu-item:hover {
+            background: var(--bg-tertiary);
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #00a884);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #c0392b);
-            color: white;
-        }
-
-        .btn-icon {
-            padding: 10px;
-            border-radius: 50%;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.1);
-        }
-
-        /* Main Container */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, rgba(108, 92, 231, 0.3) 0%, rgba(0, 206, 201, 0.2) 100%);
-            border-radius: 20px;
-            padding: 60px 40px;
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            position: relative;
-        }
-
-        /* Search Bar */
-        .search-section {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .search-bar {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 15px 20px 15px 50px;
-            border: 2px solid rgba(108, 92, 231, 0.3);
-            border-radius: 12px;
-            background: var(--bg-card);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
-        }
-
-        .search-bar::before {
-            content: '🔍';
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2rem;
-        }
-
-        .categories {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            padding: 10px 20px;
-            border: 2px solid rgba(108, 92, 231, 0.3);
-            border-radius: 20px;
-            background: transparent;
-            color: var(--text-muted);
-            font-family: inherit;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .category-btn:hover, .category-btn.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-        /* Games Grid */
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .game-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .game-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.3);
-        }
-
-        .game-thumbnail {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .game-type-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-        }
-
-        .game-type-badge.html {
-            color: var(--warning);
-        }
-
-        .game-type-badge.url {
-            color: var(--secondary);
-        }
-
-        .game-info {
-            padding: 20px;
-        }
-
-        .game-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .game-author {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-
-        .game-stats {
-            display: flex;
-            gap: 15px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .game-stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Modal */
+        
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
         }
-
-        .modal {
-            background: var(--bg-card);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlide 0.3s ease;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 25px 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            font-size: 1.4rem;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--danger);
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid rgba(108, 92, 231, 0.3);
-            border-radius: 10px;
-            background: var(--bg-dark);
-            color: var(--text);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .form-tab {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid rgba(108, 92, 231, 0.3);
-            border-radius: 10px;
-            background: transparent;
-            color: var(--text-muted);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .form-tab.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-        }
-
-        /* Game Player */
-        .game-player-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-dark);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .game-player-header {
-            padding: 15px 25px;
-            background: var(--bg-card);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(108, 92, 231, 0.3);
-        }
-
-        .game-player-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .game-player-title h2 {
-            font-size: 1.2rem;
-        }
-
-        .game-player-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .game-frame-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: #000;
-        }
-
-        .game-frame {
-            width: 100%;
-            height: 100%;
-            max-width: 1200px;
-            border: none;
-            border-radius: 10px;
-            background: white;
-        }
-
-        /* Profile */
-        .profile-header {
-            background: linear-gradient(135deg, rgba(108, 92, 231, 0.3) 0%, rgba(253, 121, 168, 0.2) 100%);
-            border-radius: 20px;
-            padding: 40px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
+        
+        .loading-spinner {
+            border: 3px solid var(--bg-tertiary);
+            border-top: 3px solid var(--accent);
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-            border: 4px solid var(--primary);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
         }
-
-        .profile-info h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        .profile-stats {
-            display: flex;
-            gap: 30px;
-            margin-top: 15px;
+        
+        .notification {
+            animation: slideInRight 0.3s ease-out;
         }
-
-        .profile-stat {
-            text-align: center;
-        }
-
-        .profile-stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .profile-stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
-
-        /* Dropdown Menu */
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 10px;
-            background: var(--bg-card);
-            border: 1px solid rgba(108, 92, 231, 0.3);
-            border-radius: 12px;
-            padding: 10px;
-            min-width: 180px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: none;
-            z-index: 100;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .dropdown-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(108, 92, 231, 0.2);
-        }
-
-        .dropdown-item.danger {
-            color: var(--danger);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 40px 20px;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-            }
-
-            .main-container {
-                padding: 20px;
-            }
-
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-stats {
-                justify-content: center;
-            }
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .toast {
-            padding: 15px 25px;
-            border-radius: 12px;
-            background: var(--bg-card);
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease;
-        }
-
-        .toast.success {
-            border-color: var(--success);
-        }
-
-        .toast.error {
-            border-color: var(--danger);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
         }
     </style>
 </head>
-<body>
-    <div id="app"></div>
+<body class="h-screen overflow-hidden">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 z-50 flex items-center justify-center" style="background: var(--bg-primary);">
+        <div class="text-center">
+            <div class="relative mb-8">
+                <div class="w-24 h-24 mx-auto">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1"/>
+                                <stop offset="50%" style="stop-color:#a855f7"/>
+                                <stop offset="100%" style="stop-color:#ec4899"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" stroke-width="4" stroke-dasharray="283" stroke-dashoffset="283" class="animate-[dash_1.5s_ease-in-out_forwards]">
+                            <animate attributeName="stroke-dashoffset" from="283" to="0" dur="1.5s" fill="freeze"/>
+                        </circle>
+                        <text x="50" y="55" text-anchor="middle" fill="url(#grad)" font-size="24" font-weight="bold">AI</text>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold gradient-text mb-2">AXES IA</h1>
+            <p class="text-gray-400 text-sm">Inicializando sistema...</p>
+            <div class="mt-6 w-64 h-1 bg-gray-800 rounded-full overflow-hidden mx-auto">
+                <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-[loading_1.5s_ease-in-out_forwards]" style="width: 0%; animation: loading 1.5s ease-in-out forwards;"></div>
+            </div>
+        </div>
+    </div>
+    <style>
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden h-screen flex flex-col">
+        <!-- Top Bar -->
+        <header class="h-12 flex items-center justify-between px-4 border-b" style="background: var(--bg-secondary); border-color: var(--border);">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">AI</span>
+                    </div>
+                    <span class="font-bold text-lg">AXES <span class="gradient-text">IA</span></span>
+                    <span class="version-badge text-white">v2.0</span>
+                </div>
+                <nav class="hidden md:flex items-center gap-1 ml-4">
+                    <button onclick="showSection('workspace')" class="nav-btn px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10" data-section="workspace">Workspace</button>
+                    <button onclick="showSection('api')" class="nav-btn px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10" data-section="api">API</button>
+                    <button onclick="showSection('docs')" class="nav-btn px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10" data-section="docs">Docs</button>
+                    <button onclick="showSection('settings')" class="nav-btn px-3 py-1.5 rounded-lg text-sm transition-all hover:bg-white/10" data-section="settings">Configurações</button>
+                </nav>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background: var(--bg-tertiary);">
+                    <span class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></span>
+                    <span class="text-xs text-green-400">Sistema Online</span>
+                </div>
+                <button onclick="toggleTheme()" class="p-2 rounded-lg transition-all hover:bg-white/10" title="Alternar tema">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+                <button onclick="openModal('apiKeyModal')" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg btn-primary text-white text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                    API Key
+                </button>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center cursor-pointer" onclick="openModal('profileModal')">
+                    <span class="text-white text-sm font-medium">U</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-hidden">
+            <!-- Workspace Section -->
+            <section id="workspaceSection" class="h-full flex">
+                <!-- Sidebar - File Tree -->
+                <aside id="sidebar" class="w-64 flex-shrink-0 border-r flex flex-col" style="background: var(--bg-secondary); border-color: var(--border);">
+                    <div class="p-3 border-b flex items-center justify-between" style="border-color: var(--border);">
+                        <span class="text-sm font-medium">Arquivos</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="createNewFile()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Novo arquivo">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                            <button onclick="createNewFolder()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Nova pasta">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                                </svg>
+                            </button>
+                            <button onclick="exportProject()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Exportar projeto">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="fileTree" class="flex-1 overflow-y-auto scrollbar-custom p-2">
+                        <!-- File tree will be populated here -->
+                    </div>
+                    <div class="p-3 border-t" style="border-color: var(--border);">
+                        <div class="text-xs text-gray-500 mb-2">Armazenamento</div>
+                        <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--bg-tertiary);">
+                            <div class="h-full bg-gradient-to-r from-indigo-500 to-purple-500" style="width: 23%;"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">2.3 MB / 10 MB</div>
+                    </div>
+                </aside>
+
+                <!-- Resize Handle -->
+                <div class="resize-handle w-1 cursor-col-resize" onmousedown="startResize(event, 'sidebar')"></div>
+
+                <!-- Editor Area -->
+                <div id="editorArea" class="flex-1 flex flex-col min-w-0">
+                    <!-- Tabs -->
+                    <div class="h-10 flex items-center border-b overflow-x-auto scrollbar-custom" style="background: var(--bg-secondary); border-color: var(--border);">
+                        <div id="editorTabs" class="flex items-center h-full">
+                            <!-- Tabs will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Editor + Preview Container -->
+                    <div class="flex-1 flex overflow-hidden">
+                        <!-- Code Editor -->
+                        <div id="editorContainer" class="flex-1 min-w-0 flex flex-col">
+                            <div id="codeEditor" class="flex-1 overflow-hidden"></div>
+                        </div>
+                        
+                        <!-- Resize Handle -->
+                        <div id="previewResizeHandle" class="resize-handle w-1 cursor-col-resize hidden" onmousedown="startResize(event, 'preview')"></div>
+                        
+                        <!-- Preview Panel -->
+                        <div id="previewPanel" class="hidden w-1/2 flex flex-col border-l" style="border-color: var(--border); background: var(--bg-secondary);">
+                            <div class="h-10 flex items-center justify-between px-3 border-b" style="border-color: var(--border);">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-medium">Preview</span>
+                                    <span id="previewStatus" class="flex items-center gap-1 text-xs text-green-400">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                        Live
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="refreshPreview()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Atualizar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                        </svg>
+                                    </button>
+                                    <button onclick="openPreviewExternal()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Abrir em nova aba">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                    </button>
+                                    <button onclick="togglePreview()" class="p-1.5 rounded hover:bg-white/10 transition-all" title="Fechar preview">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex-1 p-2 overflow-hidden">
+                                <iframe id="previewFrame" class="w-full h-full preview-frame border-0 rounded-lg"></iframe>
+                            </div>
+                            <div id="consolePanel" class="h-32 border-t flex flex-col" style="border-color: var(--border);">
+                                <div class="h-8 flex items-center justify-between px-3" style="background: var(--bg-tertiary);">
+                                    <span class="text-xs font-medium">Console</span>
+                                    <button onclick="clearConsole()" class="text-xs hover:text-indigo-400 transition-all">Limpar</button>
+                                </div>
+                                <div id="consoleOutput" class="flex-1 overflow-y-auto scrollbar-custom p-2 font-mono text-xs" style="background: var(--bg-primary);">
+                                    <!-- Console logs will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Toolbar -->
+                    <div class="h-8 flex items-center justify-between px-3 border-t text-xs" style="background: var(--bg-secondary); border-color: var(--border);">
+                        <div class="flex items-center gap-4">
+                            <span id="cursorPosition">Ln 1, Col 1</span>
+                            <span id="fileType">JavaScript</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button onclick="togglePreview()" class="flex items-center gap-1 hover:text-indigo-400 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                Preview
+                            </button>
+                            <span class="text-gray-500">UTF-8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Panel -->
+                <div id="chatPanel" class="w-96 flex-shrink-0 flex flex-col border-l" style="background: var(--bg-secondary); border-color: var(--border);">
+                    <div class="h-12 flex items-center justify-between px-4 border-b" style="border-color: var(--border);">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-medium text-sm">AXES IA</div>
+                                <div class="text-xs text-green-400 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    Online • Sem limites
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="clearChat()" class="p-2 rounded hover:bg-white/10 transition-all" title="Limpar conversa">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="p-3 border-b" style="border-color: var(--border);">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="quickAction('criar site')" class="px-2 py-1 text-xs rounded-full border hover:bg-white/5 transition-all" style="border-color: var(--border);">🌐 Criar site</button>
+                            <button onclick="quickAction('criar api')" class="px-2 py-1 text-xs rounded-full border hover:bg-white/5 transition-all" style="border-color: var(--border);">⚡ Criar API</button>
+                            <button onclick="quickAction('refatorar')" class="px-2 py-1 text-xs rounded-full border hover:bg-white/5 transition-all" style="border-color: var(--border);">🔧 Refatorar</button>
+                            <button onclick="quickAction('debug')" class="px-2 py-1 text-xs rounded-full border hover:bg-white/5 transition-all" style="border-color: var(--border);">🐛 Debug</button>
+                            <button onclick="quickAction('explicar')" class="px-2 py-1 text-xs rounded-full border hover:bg-white/5 transition-all" style="border-color: var(--border);">📚 Explicar</button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div id="chatMessages" class="flex-1 overflow-y-auto scrollbar-custom p-4 space-y-4">
+                        <div class="chat-message">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white text-xs font-bold">AI</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-xs text-gray-500 mb-1">AXES IA</div>
+                                    <div class="p-3 rounded-lg" style="background: var(--bg-tertiary);">
+                                        <p class="text-sm">Olá! Sou a <strong class="gradient-text">AXES IA</strong>, sua assistente de programação profissional. 🚀</p>
+                                        <p class="text-sm mt-2">Posso ajudá-lo a:</p>
+                                        <ul class="text-sm mt-1 ml-4 list-disc text-gray-400">
+                                            <li>Criar sites, apps e sistemas completos</li>
+                                            <li>Gerar código de alta qualidade</li>
+                                            <li>Refatorar e otimizar código existente</li>
+                                            <li>Explicar conceitos técnicos</li>
+                                            <li>Debug e resolução de problemas</li>
+                                        </ul>
+                                        <p class="text-sm mt-2 text-indigo-400">Sem limites de mensagens. Sem restrições. ♾️</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="p-4 border-t" style="border-color: var(--border);">
+                        <div class="relative">
+                            <textarea id="chatInput" rows="3" placeholder="Descreva o que você quer criar..." class="w-full p-3 pr-12 rounded-xl resize-none text-sm font-mono scrollbar-custom focus:outline-none focus:ring-2 focus:ring-indigo-500" style="background: var(--bg-tertiary); color: var(--text-primary);" onkeydown="handleChatKeydown(event)"></textarea>
+                            <button onclick="sendMessage()" class="absolute right-3 bottom-3 p-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:opacity-90 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
+                            <span>Enter para enviar • Shift+Enter para nova linha</span>
+                            <span id="tokenCount">0 tokens</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Section -->
+            <section id="apiSection" class="h-full hidden overflow-auto scrollbar-custom p-6">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold mb-2">API <span class="gradient-text">AXES IA</span></h1>
+                        <p class="text-gray-400">Acesse todo o poder da AXES IA através de nossa API REST profissional.</p>
+                    </div>
+
+                    <!-- API Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                            <div class="text-2xl font-bold gradient-text">∞</div>
+                            <div class="text-sm text-gray-400">Requisições/mês</div>
+                        </div>
+                        <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                            <div class="text-2xl font-bold text-green-400">99.9%</div>
+                            <div class="text-sm text-gray-400">Uptime</div>
+                        </div>
+                        <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                            <div class="text-2xl font-bold text-purple-400">&lt;100ms</div>
+                            <div class="text-sm text-gray-400">Latência média</div>
+                        </div>
+                        <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                            <div class="text-2xl font-bold text-yellow-400">v2.0</div>
+                            <div class="text-sm text-gray-400">Versão atual</div>
+                        </div>
+                    </div>
+
+                    <!-- API Endpoints -->
+                    <div class="space-y-4">
+                        <h2 class="text-xl font-bold">Endpoints</h2>
+                        
+                        <div class="rounded-xl overflow-hidden" style="background: var(--bg-secondary);">
+                            <div class="p-4 border-b" style="border-color: var(--border);">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-green-500/20 text-green-400">POST</span>
+                                    <code class="font-mono text-sm">/v1/chat</code>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Envie mensagens para a IA e receba respostas inteligentes.</p>
+                            </div>
+                            <div class="p-4" style="background: var(--bg-primary);">
+                                <pre class="text-xs font-mono overflow-x-auto"><code class="text-green-400">{
+  "message": "Crie um site de portfólio moderno",
+  "context": [],
+  "options": {
+    "stream": true,
+    "temperature": 0.7
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl overflow-hidden" style="background: var(--bg-secondary);">
+                            <div class="p-4 border-b" style="border-color: var(--border);">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-green-500/20 text-green-400">POST</span>
+                                    <code class="font-mono text-sm">/v1/code/generate</code>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Gere código de alta qualidade para qualquer linguagem.</p>
+                            </div>
+                            <div class="p-4" style="background: var(--bg-primary);">
+                                <pre class="text-xs font-mono overflow-x-auto"><code class="text-blue-400">{
+  "description": "API REST com autenticação JWT",
+  "language": "typescript",
+  "framework": "express",
+  "features": ["auth", "validation", "swagger"]
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl overflow-hidden" style="background: var(--bg-secondary);">
+                            <div class="p-4 border-b" style="border-color: var(--border);">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-green-500/20 text-green-400">POST</span>
+                                    <code class="font-mono text-sm">/v1/preview/start</code>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Inicie um preview ao vivo do projeto.</p>
+                            </div>
+                            <div class="p-4" style="background: var(--bg-primary);">
+                                <pre class="text-xs font-mono overflow-x-auto"><code class="text-purple-400">{
+  "project_id": "proj_abc123",
+  "port": 3000,
+  "auto_reload": true
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl overflow-hidden" style="background: var(--bg-secondary);">
+                            <div class="p-4 border-b" style="border-color: var(--border);">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 rounded text-xs font-bold bg-blue-500/20 text-blue-400">GET</span>
+                                    <code class="font-mono text-sm">/v1/project/export</code>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">Exporte o projeto como arquivo ZIP.</p>
+                            </div>
+                            <div class="p-4" style="background: var(--bg-primary);">
+                                <pre class="text-xs font-mono overflow-x-auto"><code class="text-yellow-400">// Query params
+?project_id=proj_abc123
+&format=zip
+&include_deps=true</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SDK Examples -->
+                    <div class="mt-8">
+                        <h2 class="text-xl font-bold mb-4">SDK & Exemplos</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="text-yellow-400">🟨</span>
+                                    <span class="font-medium">JavaScript / Node.js</span>
+                                </div>
+                                <pre class="text-xs font-mono p-3 rounded-lg overflow-x-auto" style="background: var(--bg-primary);"><code>import { AxesIA } from '@axes/sdk';
+
+const ai = new AxesIA({
+  apiKey: 'sua-chave-api'
+});
+
+const response = await ai.chat({
+  message: 'Crie um componente React'
+});
+
+console.log(response.code);</code></pre>
+                            </div>
+                            <div class="p-4 rounded-xl" style="background: var(--bg-secondary);">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="text-blue-400">🐍</span>
+                                    <span class="font-medium">Python</span>
+                                </div>
+                                <pre class="text-xs font-mono p-3 rounded-lg overflow-x-auto" style="background: var(--bg-primary);"><code>from axes_ia import AxesIA
+
+ai = AxesIA(api_key="sua-chave-api")
+
+response = ai.code.generate(
+    description="API FastAPI",
+    language="python"
+)
+
+print(response.files)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Docs Section -->
+            <section id="docsSection" class="h-full hidden overflow-auto scrollbar-custom p-6">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-3xl font-bold mb-8">Documentação <span class="gradient-text">AXES IA</span></h1>
+                    
+                    <div class="space-y-8">
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="text-2xl">🚀</span> Introdução
+                            </h2>
+                            <p class="text-gray-400 leading-relaxed">
+                                A AXES IA é uma plataforma de inteligência artificial profissional focada em desenvolvimento de software. 
+                                Diferente de outras IAs, não temos limites artificiais de uso - nossa filosofia é escalar pela infraestrutura, não por restrições.
+                            </p>
+                        </div>
+
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="text-2xl">⚡</span> Capacidades
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                    <h3 class="font-medium mb-2">Geração de Código</h3>
+                                    <p class="text-sm text-gray-400">Crie código completo e funcional em qualquer linguagem.</p>
+                                </div>
+                                <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                    <h3 class="font-medium mb-2">Preview ao Vivo</h3>
+                                    <p class="text-sm text-gray-400">Visualize seus projetos em tempo real enquanto desenvolve.</p>
+                                </div>
+                                <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                    <h3 class="font-medium mb-2">Sistema de Arquivos</h3>
+                                    <p class="text-sm text-gray-400">Gerencie arquivos, pastas e exporte projetos completos.</p>
+                                </div>
+                                <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                    <h3 class="font-medium mb-2">API Completa</h3>
+                                    <p class="text-sm text-gray-400">Integre a AXES IA em suas aplicações via API REST.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="text-2xl">♾️</span> Política de Uso Ilimitado
+                            </h2>
+                            <div class="space-y-3 text-gray-400">
+                                <p class="flex items-center gap-2">
+                                    <span class="text-green-400">✓</span> Sem limite de mensagens por dia
+                                </p>
+                                <p class="flex items-center gap-2">
+                                    <span class="text-green-400">✓</span> Sem limite de tokens por usuário
+                                </p>
+                                <p class="flex items-center gap-2">
+                                    <span class="text-green-400">✓</span> Todas as funcionalidades disponíveis
+                                </p>
+                                <p class="flex items-center gap-2">
+                                    <span class="text-green-400">✓</span> Escalabilidade por infraestrutura
+                                </p>
+                                <p class="flex items-center gap-2">
+                                    <span class="text-green-400">✓</span> Operação contínua 24/7
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                                <span class="text-2xl">🔐</span> Segurança
+                            </h2>
+                            <p class="text-gray-400 leading-relaxed">
+                                Cada sessão de execução de código roda em um sandbox isolado com containers dedicados. 
+                                Implementamos controles técnicos para garantir estabilidade e segurança, sem nunca bloquear funcionalidades para o usuário.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="h-full hidden overflow-auto scrollbar-custom p-6">
+                <div class="max-w-2xl mx-auto">
+                    <h1 class="text-3xl font-bold mb-8">Configurações</h1>
+                    
+                    <div class="space-y-6">
+                        <!-- Appearance -->
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-lg font-bold mb-4">Aparência</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium">Tema</div>
+                                        <div class="text-sm text-gray-400">Escolha entre tema claro ou escuro</div>
+                                    </div>
+                                    <select id="themeSelect" onchange="setTheme(this.value)" class="px-4 py-2 rounded-lg" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                                        <option value="dark">Escuro</option>
+                                        <option value="light">Claro</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium">Tamanho da fonte do editor</div>
+                                        <div class="text-sm text-gray-400">Ajuste o tamanho do texto no editor</div>
+                                    </div>
+                                    <select id="fontSizeSelect" onchange="setFontSize(this.value)" class="px-4 py-2 rounded-lg" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                                        <option value="12">12px</option>
+                                        <option value="13" selected>13px</option>
+                                        <option value="14">14px</option>
+                                        <option value="16">16px</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editor -->
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-lg font-bold mb-4">Editor</h2>
+                            <div class="space-y-4">
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <div>
+                                        <div class="font-medium">Auto-save</div>
+                                        <div class="text-sm text-gray-400">Salvar automaticamente ao editar</div>
+                                    </div>
+                                    <input type="checkbox" id="autoSaveToggle" checked class="w-5 h-5 accent-indigo-500">
+                                </label>
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <div>
+                                        <div class="font-medium">Preview automático</div>
+                                        <div class="text-sm text-gray-400">Atualizar preview ao salvar</div>
+                                    </div>
+                                    <input type="checkbox" id="autoPreviewToggle" checked class="w-5 h-5 accent-indigo-500">
+                                </label>
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <div>
+                                        <div class="font-medium">Word wrap</div>
+                                        <div class="text-sm text-gray-400">Quebrar linhas longas</div>
+                                    </div>
+                                    <input type="checkbox" id="wordWrapToggle" class="w-5 h-5 accent-indigo-500">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- AI Settings -->
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-lg font-bold mb-4">IA</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-medium">Temperatura</div>
+                                        <div class="text-sm text-gray-400">Criatividade das respostas (0-1)</div>
+                                    </div>
+                                    <input type="range" id="temperatureSlider" min="0" max="100" value="70" class="w-32 accent-indigo-500">
+                                </div>
+                                <label class="flex items-center justify-between cursor-pointer">
+                                    <div>
+                                        <div class="font-medium">Explicações detalhadas</div>
+                                        <div class="text-sm text-gray-400">Incluir explicações no código gerado</div>
+                                    </div>
+                                    <input type="checkbox" id="detailedExplanations" class="w-5 h-5 accent-indigo-500">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Data -->
+                        <div class="p-6 rounded-xl" style="background: var(--bg-secondary);">
+                            <h2 class="text-lg font-bold mb-4">Dados</h2>
+                            <div class="space-y-4">
+                                <button onclick="exportAllData()" class="w-full py-3 rounded-lg btn-primary text-white font-medium">
+                                    Exportar todos os dados
+                                </button>
+                                <button onclick="clearAllData()" class="w-full py-3 rounded-lg border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all font-medium">
+                                    Limpar todos os dados
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
+        <div class="w-full max-w-md mx-4 p-6 rounded-2xl" style="background: var(--bg-secondary);">
+            <h3 class="text-xl font-bold mb-4">Sua API Key</h3>
+            <div class="p-4 rounded-lg font-mono text-sm break-all" style="background: var(--bg-tertiary);">
+                <span id="apiKeyDisplay">axes_sk_••••••••••••••••••••</span>
+            </div>
+            <div class="flex gap-3 mt-4">
+                <button onclick="generateNewApiKey()" class="flex-1 py-2 rounded-lg btn-primary text-white text-sm">Gerar Nova</button>
+                <button onclick="copyApiKey()" class="flex-1 py-2 rounded-lg border text-sm" style="border-color: var(--border);">Copiar</button>
+            </div>
+            <button onclick="closeModal('apiKeyModal')" class="w-full mt-3 py-2 text-gray-400 hover:text-white transition-all text-sm">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
+        <div class="w-full max-w-md mx-4 p-6 rounded-2xl" style="background: var(--bg-secondary);">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-4">
+                    <span class="text-white text-3xl font-bold">U</span>
+                </div>
+                <h3 class="text-xl font-bold">Usuário Pro</h3>
+                <p class="text-gray-400 text-sm">usuario@exemplo.com</p>
+            </div>
+            <div class="space-y-3 p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Plano</span>
+                    <span class="gradient-text font-medium">Ilimitado ♾️</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Mensagens hoje</span>
+                    <span>247</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Projetos criados</span>
+                    <span>12</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">Membro desde</span>
+                    <span>Jan 2024</span>
+                </div>
+            </div>
+            <button onclick="closeModal('profileModal')" class="w-full mt-4 py-2 rounded-lg btn-primary text-white text-sm">Fechar</button>
+        </div>
+    </div>
+
+    <!-- New File Modal -->
+    <div id="newFileModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
+        <div class="w-full max-w-md mx-4 p-6 rounded-2xl" style="background: var(--bg-secondary);">
+            <h3 class="text-xl font-bold mb-4">Novo Arquivo</h3>
+            <input type="text" id="newFileName" placeholder="nome-do-arquivo.js" class="w-full p-3 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500" style="background: var(--bg-tertiary); color: var(--text-primary);">
+            <div class="flex gap-3 mt-4">
+                <button onclick="confirmNewFile()" class="flex-1 py-2 rounded-lg btn-primary text-white text-sm">Criar</button>
+                <button onclick="closeModal('newFileModal')" class="flex-1 py-2 rounded-lg border text-sm" style="border-color: var(--border);">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <script>
-        // ========== DATABASE ==========
-        const DB = {
-            getUsers: () => JSON.parse(localStorage.getItem('gamehub_users') || '[]'),
-            saveUsers: (users) => localStorage.setItem('gamehub_users', JSON.stringify(users)),
-            getGames: () => JSON.parse(localStorage.getItem('gamehub_games') || '[]'),
-            saveGames: (games) => localStorage.setItem('gamehub_games', JSON.stringify(games)),
-            getCurrentUser: () => JSON.parse(localStorage.getItem('gamehub_current_user') || 'null'),
-            setCurrentUser: (user) => localStorage.setItem('gamehub_current_user', JSON.stringify(user)),
-            logout: () => localStorage.removeItem('gamehub_current_user')
+        // ============================================
+        // AXES IA - Core Application
+        // ============================================
+
+        // State Management
+        const state = {
+            files: new Map(),
+            currentFile: null,
+            openTabs: [],
+            chatHistory: [],
+            apiKey: 'axes_sk_' + Math.random().toString(36).substring(2, 15),
+            theme: 'dark',
+            settings: {
+                autoSave: true,
+                autoPreview: true,
+                wordWrap: false,
+                fontSize: 13,
+                temperature: 0.7
+            }
         };
 
-        // Initialize with sample games if empty
-        if (DB.getGames().length === 0) {
-            const sampleGames = [
-                {
-                    id: 1,
-                    title: "Snake Game",
-                    description: "O clássico jogo da cobrinha!",
-                    type: "html",
-                    content: `<!DOCTYPE html><html><head><style>*{margin:0;padding:0}canvas{background:#1a1a2e;display:block;margin:20px auto;border-radius:10px}</style></head><body><canvas id="c" width="400" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');let s=[{x:200,y:200}],d={x:20,y:0},f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20};document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&d.y===0)d={x:0,y:-20};if(e.key==='ArrowDown'&&d.y===0)d={x:0,y:20};if(e.key==='ArrowLeft'&&d.x===0)d={x:-20,y:0};if(e.key==='ArrowRight'&&d.x===0)d={x:20,y:0}});setInterval(()=>{const h={x:s[0].x+d.x,y:s[0].y+d.y};if(h.x<0||h.x>=400||h.y<0||h.y>=400||s.some(p=>p.x===h.x&&p.y===h.y)){s=[{x:200,y:200}];d={x:20,y:0};return}s.unshift(h);if(h.x===f.x&&h.y===f.y){f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20}}else{s.pop()}c.fillStyle='#1a1a2e';c.fillRect(0,0,400,400);c.fillStyle='#00cec9';s.forEach(p=>c.fillRect(p.x,p.y,18,18));c.fillStyle='#fd79a8';c.fillRect(f.x,f.y,18,18)},100);<\/script></body></html>`,
-                    thumbnail: "",
-                    category: "Arcade",
-                    author: "GameHub",
-                    authorId: 0,
-                    plays: 1250,
-                    likes: 89,
-                    likedBy: [],
-                    createdAt: Date.now() - 86400000 * 7
-                },
-                {
-                    id: 2,
-                    title: "Pong Game",
-                    description: "Jogue Pong contra o computador!",
-                    type: "html",
-                    content: `<!DOCTYPE html><html><head><style>*{margin:0}canvas{background:#0a0a0f;display:block;margin:20px auto}</style></head><body><canvas id="c" width="600" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');let p1=150,p2=150,bx=300,by=200,dx=4,dy=4,s1=0,s2=0;document.addEventListener('mousemove',e=>{const r=c.canvas.getBoundingClientRect();p1=e.clientY-r.top-40});setInterval(()=>{bx+=dx;by+=dy;if(by<=0||by>=400)dy=-dy;if(bx<=20&&by>p1&&by<p1+80){dx=-dx;dx*=1.05}if(bx>=570&&by>p2&&by<p2+80){dx=-dx;dx*=1.05}if(bx<0){s2++;bx=300;by=200;dx=4;dy=4}if(bx>600){s1++;bx=300;by=200;dx=-4;dy=4}p2+=(by-p2-40)*0.08;c.fillStyle='#0a0a0f';c.fillRect(0,0,600,400);c.fillStyle='#6c5ce7';c.fillRect(10,p1,10,80);c.fillStyle='#00cec9';c.fillRect(580,p2,10,80);c.fillStyle='#fff';c.beginPath();c.arc(bx,by,8,0,Math.PI*2);c.fill();c.font='30px Arial';c.fillText(s1,250,50);c.fillText(s2,330,50)},16);<\/script></body></html>`,
-                    thumbnail: "",
-                    category: "Arcade",
-                    author: "GameHub",
-                    authorId: 0,
-                    plays: 890,
-                    likes: 67,
-                    likedBy: [],
-                    createdAt: Date.now() - 86400000 * 5
-                },
-                {
-                    id: 3,
-                    title: "Memory Game",
-                    description: "Teste sua memória com este jogo de cartas!",
-                    type: "html",
-                    content: `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial}.grid{display:grid;grid-template-columns:repeat(4,80px);gap:10px}.card{width:80px;height:80px;background:#6c5ce7;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;transition:.3s}.card.flipped{background:#00cec9}.card.matched{background:#00b894}h2{color:#fff;margin:20px}</style></head><body><h2>Encontre os pares!</h2><div class="grid" id="grid"></div><script>const e=['🎮','🎲','🎯','🎪','🎨','🎭','🎪','🎯','🎲','🎮','🎨','🎭'],g=document.getElementById('grid');let f=[],m=[];e.sort(()=>Math.random()-.5).forEach((s,i)=>{const c=document.createElement('div');c.className='card';c.dataset.i=i;c.dataset.s=s;c.onclick=()=>{if(f.length<2&&!c.classList.contains('flipped')&&!c.classList.contains('matched')){c.classList.add('flipped');c.textContent=s;f.push(c);if(f.length===2){if(f[0].dataset.s===f[1].dataset.s){f.forEach(x=>x.classList.add('matched'));f=[];m.push(1);if(m.length===6)setTimeout(()=>alert('Você venceu!'),300)}else{setTimeout(()=>{f.forEach(x=>{x.classList.remove('flipped');x.textContent=''});f=[]},1000)}}}};g.appendChild(c)});<\/script></body></html>`,
-                    thumbnail: "",
-                    category: "Puzzle",
-                    author: "GameHub",
-                    authorId: 0,
-                    plays: 567,
-                    likes: 45,
-                    likedBy: [],
-                    createdAt: Date.now() - 86400000 * 3
-                },
-                {
-                    id: 4,
-                    title: "Flappy Bird Clone",
-                    description: "O famoso jogo Flappy Bird!",
-                    type: "html",
-                    content: `<!DOCTYPE html><html><head><style>*{margin:0}canvas{display:block;margin:20px auto;border-radius:10px}</style></head><body><canvas id="c" width="400" height="600"></canvas><script>const c=document.getElementById('c').getContext('2d');let y=300,v=0,p=[],s=0,g=false;document.onclick=()=>{v=-8;if(g){y=300;v=0;p=[];s=0;g=false}};setInterval(()=>{if(g)return;v+=0.4;y+=v;if(p.length===0||p[p.length-1].x<250){p.push({x:400,h:Math.random()*200+100})}p=p.filter(x=>x.x>-60);p.forEach(x=>{x.x-=3;if(x.x===47)s++});c.fillStyle='#87CEEB';c.fillRect(0,0,400,600);c.fillStyle='#228B22';c.fillRect(0,550,400,50);p.forEach(x=>{c.fillStyle='#2ecc71';c.fillRect(x.x,0,50,x.h);c.fillRect(x.x,x.h+150,50,600)});c.fillStyle='#f1c40f';c.beginPath();c.arc(50,y,20,0,Math.PI*2);c.fill();c.fillStyle='#fff';c.font='30px Arial';c.fillText(s,200,50);p.forEach(x=>{if(50>x.x&&50<x.x+50&&(y<x.h||y>x.h+150))g=true});if(y>530||y<0)g=true;if(g){c.fillStyle='rgba(0,0,0,0.5)';c.fillRect(0,0,400,600);c.fillStyle='#fff';c.fillText('Game Over!',140,300);c.fillText('Clique para reiniciar',80,350)}},20);<\/script></body></html>`,
-                    thumbnail: "",
-                    category: "Arcade",
-                    author: "GameHub",
-                    authorId: 0,
-                    plays: 2340,
-                    likes: 156,
-                    likedBy: [],
-                    createdAt: Date.now() - 86400000 * 10
-                },
-                {
-                    id: 5,
-                    title: "Tetris",
-                    description: "O clássico jogo de blocos!",
-                    type: "html",
-                    content: `<!DOCTYPE html><html><head><style>*{margin:0}body{background:#1a1a2e;display:flex;justify-content:center;padding:20px}canvas{border-radius:5px}</style></head><body><canvas id="c" width="200" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');const C=['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#dfe6e9','#a29bfe'];const P=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];let g=Array(20).fill().map(()=>Array(10).fill(0));let p,px,py,pc;function np(){p=P[Math.floor(Math.random()*7)];px=4;py=0;pc=C[Math.floor(Math.random()*7)]}np();function d(){c.fillStyle='#2d3436';c.fillRect(0,0,200,400);for(let y=0;y<20;y++)for(let x=0;x<10;x++)if(g[y][x]){c.fillStyle=g[y][x];c.fillRect(x*20+1,y*20+1,18,18)}for(let y=0;y<p.length;y++)for(let x=0;x<p[0].length;x++)if(p[y][x]){c.fillStyle=pc;c.fillRect((px+x)*20+1,(py+y)*20+1,18,18)}}function v(nx,ny,np){for(let y=0;y<np.length;y++)for(let x=0;x<np[0].length;x++)if(np[y][x]){if(nx+x<0||nx+x>=10||ny+y>=20)return false;if(g[ny+y]&&g[ny+y][nx+x])return false}return true}function m(){for(let y=0;y<p.length;y++)for(let x=0;x<p[0].length;x++)if(p[y][x])g[py+y][px+x]=pc;for(let y=19;y>=0;y--)if(g[y].every(x=>x)){g.splice(y,1);g.unshift(Array(10).fill(0));y++}np();if(!v(px,py,p))g=Array(20).fill().map(()=>Array(10).fill(0))}document.onkeydown=e=>{if(e.key==='ArrowLeft'&&v(px-1,py,p))px--;if(e.key==='ArrowRight'&&v(px+1,py,p))px++;if(e.key==='ArrowDown'&&v(px,py+1,p))py++;if(e.key==='ArrowUp'){const r=p[0].map((x,i)=>p.map(r=>r[i]).reverse());if(v(px,py,r))p=r}d()};setInterval(()=>{if(v(px,py+1,p))py++;else m();d()},500);d();<\/script></body></html>`,
-                    thumbnail: "",
-                    category: "Puzzle",
-                    author: "GameHub",
-                    authorId: 0,
-                    plays: 1890,
-                    likes: 134,
-                    likedBy: [],
-                    createdAt: Date.now() - 86400000 * 14
-                }
-            ];
-            DB.saveGames(sampleGames);
+        let editor = null;
+        let previewVisible = false;
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.remove('hidden');
+                initializeApp();
+            }, 2000);
+        });
+
+        function initializeApp() {
+            // Initialize CodeMirror
+            editor = CodeMirror(document.getElementById('codeEditor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                indentUnit: 2,
+                tabSize: 2,
+                lineWrapping: false
+            });
+
+            editor.on('cursorActivity', updateCursorPosition);
+            editor.on('change', handleEditorChange);
+
+            // Load saved state
+            loadState();
+
+            // Initialize default files
+            if (state.files.size === 0) {
+                createDefaultProject();
+            }
+
+            renderFileTree();
+            renderTabs();
+
+            // Open first file if exists
+            if (state.files.size > 0 && !state.currentFile) {
+                const firstFile = state.files.keys().next().value;
+                openFile(firstFile);
+            }
+
+            // Show workspace section by default
+            showSection('workspace');
         }
 
-        // ========== STATE ==========
-        let state = {
-            currentUser: DB.getCurrentUser(),
-            view: 'home',
-            modal: null,
-            playingGame: null,
-            searchQuery: '',
-            selectedCategory: 'Todos',
-            dropdownOpen: false
-        };
+        function createDefaultProject() {
+            const defaultFiles = {
+                'index.html': `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Projeto</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Bem-vindo ao AXES IA</h1>
+        <p>Seu projeto está pronto para começar!</p>
+        <button id="actionBtn">Clique aqui</button>
+    </div>
+    <script src="script.js"><\/script>
+</body>
+</html>`,
+                'styles.css': `* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        const categories = ['Todos', 'Arcade', 'Puzzle', 'Ação', 'Aventura', 'Corrida', 'Esporte', 'Outros'];
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
 
-        // ========== HELPERS ==========
-        function showToast(message, type = 'success') {
-            const container = document.querySelector('.toast-container') || (() => {
-                const c = document.createElement('div');
-                c.className = 'toast-container';
-                document.body.appendChild(c);
-                return c;
-            })();
+.container {
+    text-align: center;
+    padding: 2rem;
+}
 
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-            setTimeout(() => toast.remove(), 3000);
-        }
+p {
+    color: #94a3b8;
+    margin-bottom: 2rem;
+}
 
-        function generateId() {
-            return Date.now() + Math.random();
-        }
+button {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        function formatNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num.toString();
-        }
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+}`,
+                'script.js': `// AXES IA - Script Principal
 
-        function timeAgo(timestamp) {
-            const seconds = Math.floor((Date.now() - timestamp) / 1000);
-            if (seconds < 60) return 'agora';
-            if (seconds < 3600) return Math.floor(seconds / 60) + ' min';
-            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
-            return Math.floor(seconds / 86400) + 'd';
-        }
-
-        function getGameIcon(category) {
-            const icons = {
-                'Arcade': '👾',
-                'Puzzle': '🧩',
-                'Ação': '⚔️',
-                'Aventura': '🗺️',
-                'Corrida': '🏎️',
-                'Esporte': '⚽',
-                'Outros': '🎮'
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 AXES IA - Projeto inicializado!');
+    
+    const btn = document.getElementById('actionBtn');
+    let clicks = 0;
+    
+    btn.addEventListener('click', () => {
+        clicks++;
+        console.log(\`Botão clicado \${clicks} vezes\`);
+        btn.textContent = \`Cliques: \${clicks}\`;
+        
+        // Animação
+        btn.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            btn.style.transform = 'scale(1)';
+        }, 150);
+    });
+});`
             };
-            return icons[category] || '🎮';
-        }
 
-        // ========== RENDER ==========
-        function render() {
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                ${renderHeader()}
-                ${state.playingGame ? renderGamePlayer() : ''}
-                ${state.modal ? renderModal() : ''}
-                <div class="main-container">
-                    ${state.view === 'home' ? renderHome() : ''}
-                    ${state.view === 'profile' ? renderProfile() : ''}
-                    ${state.view === 'my-games' ? renderMyGames() : ''}
-                </div>
-            `;
-            attachEventListeners();
-        }
-
-        function renderHeader() {
-            return `
-                <header class="header">
-                    <div class="logo" onclick="navigate('home')">
-                        <span class="logo-icon">🎮</span>
-                        <span>GameHub</span>
-                    </div>
-                    <nav class="nav-links">
-                        <span class="nav-link ${state.view === 'home' ? 'active' : ''}" onclick="navigate('home')">
-                            🏠 Início
-                        </span>
-                        ${state.currentUser ? `
-                            <span class="nav-link ${state.view === 'my-games' ? 'active' : ''}" onclick="navigate('my-games')">
-                                📁 Meus Jogos
-                            </span>
-                        ` : ''}
-                    </nav>
-                    <div class="user-menu">
-                        ${state.currentUser ? `
-                            <button class="btn btn-primary" onclick="openModal('add-game')">
-                                ➕ Publicar Jogo
-                            </button>
-                            <div class="dropdown">
-                                <div class="user-avatar" onclick="toggleDropdown()">
-                                    ${state.currentUser.username.charAt(0).toUpperCase()}
-                                </div>
-                                <div class="dropdown-menu ${state.dropdownOpen ? 'show' : ''}" id="dropdown">
-                                    <div class="dropdown-item" onclick="navigate('profile'); closeDropdown()">
-                                        👤 Meu Perfil
-                                    </div>
-                                    <div class="dropdown-item" onclick="navigate('my-games'); closeDropdown()">
-                                        📁 Meus Jogos
-                                    </div>
-                                    <div class="dropdown-item danger" onclick="logout()">
-                                        🚪 Sair
-                                    </div>
-                                </div>
-                            </div>
-                        ` : `
-                            <button class="btn btn-secondary" onclick="openModal('login')">Entrar</button>
-                            <button class="btn btn-primary" onclick="openModal('register')">Cadastrar</button>
-                        `}
-                    </div>
-                </header>
-            `;
-        }
-
-        function renderHome() {
-            const games = DB.getGames();
-            const filteredGames = games.filter(game => {
-                const matchesSearch = game.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
-                                     game.description.toLowerCase().includes(state.searchQuery.toLowerCase());
-                const matchesCategory = state.selectedCategory === 'Todos' || game.category === state.selectedCategory;
-                return matchesSearch && matchesCategory;
-            }).sort((a, b) => b.createdAt - a.createdAt);
-
-            return `
-                <div class="hero">
-                    <h1>🎮 Bem-vindo ao GameHub!</h1>
-                    <p>Descubra, jogue e publique jogos incríveis criados pela comunidade</p>
-                    <div class="hero-buttons">
-                        ${state.currentUser ? `
-                            <button class="btn btn-primary" onclick="openModal('add-game')">
-                                🚀 Publicar Meu Jogo
-                            </button>
-                        ` : `
-                            <button class="btn btn-primary" onclick="openModal('register')">
-                                🚀 Começar Agora
-                            </button>
-                        `}
-                        <button class="btn btn-secondary" onclick="document.querySelector('.games-grid').scrollIntoView({behavior: 'smooth'})">
-                            🎮 Ver Jogos
-                        </button>
-                    </div>
-                </div>
-
-                <div class="search-section">
-                    <div class="search-bar">
-                        <input 
-                            type="text" 
-                            placeholder="Buscar jogos..." 
-                            value="${state.searchQuery}"
-                            oninput="updateSearch(this.value)"
-                        >
-                    </div>
-                    <div class="categories">
-                        ${categories.map(cat => `
-                            <button class="category-btn ${state.selectedCategory === cat ? 'active' : ''}" 
-                                    onclick="selectCategory('${cat}')">
-                                ${cat}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <h2 class="section-title">
-                    🔥 ${state.selectedCategory === 'Todos' ? 'Todos os Jogos' : state.selectedCategory}
-                    <span style="color: var(--text-muted); font-size: 1rem;">(${filteredGames.length})</span>
-                </h2>
-
-                ${filteredGames.length > 0 ? `
-                    <div class="games-grid">
-                        ${filteredGames.map(game => renderGameCard(game)).join('')}
-                    </div>
-                ` : `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎮</div>
-                        <h3>Nenhum jogo encontrado</h3>
-                        <p>Tente buscar por outro termo ou categoria</p>
-                    </div>
-                `}
-            `;
-        }
-
-        function renderGameCard(game) {
-            const isLiked = state.currentUser && game.likedBy && game.likedBy.includes(state.currentUser.id);
-            return `
-                <div class="game-card" onclick="playGame(${game.id})">
-                    <div class="game-thumbnail">
-                        ${game.thumbnail ? 
-                            `<img src="${game.thumbnail}" alt="${game.title}">` : 
-                            getGameIcon(game.category)
-                        }
-                        <span class="game-type-badge ${game.type}">${game.type.toUpperCase()}</span>
-                    </div>
-                    <div class="game-info">
-                        <h3 class="game-title">${game.title}</h3>
-                        <p class="game-author">por ${game.author}</p>
-                        <div class="game-stats">
-                            <span class="game-stat">👁️ ${formatNumber(game.plays)}</span>
-                            <span class="game-stat">${isLiked ? '❤️' : '🤍'} ${formatNumber(game.likes)}</span>
-                            <span class="game-stat">🕐 ${timeAgo(game.createdAt)}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderProfile() {
-            if (!state.currentUser) {
-                navigate('home');
-                return '';
+            for (const [name, content] of Object.entries(defaultFiles)) {
+                state.files.set(name, { content, history: [content] });
             }
-
-            const games = DB.getGames().filter(g => g.authorId === state.currentUser.id);
-            const totalPlays = games.reduce((sum, g) => sum + g.plays, 0);
-            const totalLikes = games.reduce((sum, g) => sum + g.likes, 0);
-
-            return `
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        ${state.currentUser.username.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="profile-info">
-                        <h1>${state.currentUser.username}</h1>
-                        <p style="color: var(--text-muted)">${state.currentUser.email}</p>
-                        <div class="profile-stats">
-                            <div class="profile-stat">
-                                <div class="profile-stat-value">${games.length}</div>
-                                <div class="profile-stat-label">Jogos</div>
-                            </div>
-                            <div class="profile-stat">
-                                <div class="profile-stat-value">${formatNumber(totalPlays)}</div>
-                                <div class="profile-stat-label">Plays</div>
-                            </div>
-                            <div class="profile-stat">
-                                <div class="profile-stat-value">${formatNumber(totalLikes)}</div>
-                                <div class="profile-stat-label">Likes</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 class="section-title">🎮 Meus Jogos</h2>
-                ${games.length > 0 ? `
-                    <div class="games-grid">
-                        ${games.map(game => renderGameCard(game)).join('')}
-                    </div>
-                ` : `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🎮</div>
-                        <h3>Você ainda não publicou nenhum jogo</h3>
-                        <p>Clique no botão abaixo para publicar seu primeiro jogo!</p>
-                        <button class="btn btn-primary" style="margin-top: 20px" onclick="openModal('add-game')">
-                            ➕ Publicar Jogo
-                        </button>
-                    </div>
-                `}
-            `;
+            saveState();
         }
 
-        function renderMyGames() {
-            if (!state.currentUser) {
-                navigate('home');
-                return '';
-            }
+        // File Operations
+        function renderFileTree() {
+            const container = document.getElementById('fileTree');
+            container.innerHTML = '';
 
-            const games = DB.getGames().filter(g => g.authorId === state.currentUser.id);
+            const fileIcons = {
+                'html': '📄',
+                'css': '🎨',
+                'js': '📜',
+                'json': '📋',
+                'md': '📝',
+                'py': '🐍',
+                'ts': '💠',
+                'tsx': '⚛️',
+                'jsx': '⚛️'
+            };
 
-            return `
-                <h2 class="section-title" style="margin-bottom: 30px">
-                    📁 Meus Jogos
-                    <button class="btn btn-primary" style="margin-left: auto" onclick="openModal('add-game')">
-                        ➕ Novo Jogo
+            state.files.forEach((data, name) => {
+                const ext = name.split('.').pop();
+                const icon = fileIcons[ext] || '📄';
+                
+                const item = document.createElement('div');
+                item.className = `file-tree-item flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm ${state.currentFile === name ? 'active' : ''}`;
+                item.innerHTML = `
+                    <span>${icon}</span>
+                    <span class="flex-1 truncate">${name}</span>
+                    <button class="opacity-0 hover:opacity-100 p-1 hover:text-red-400 transition-all" onclick="event.stopPropagation(); deleteFile('${name}')">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
                     </button>
-                </h2>
-
-                ${games.length > 0 ? `
-                    <div class="games-grid">
-                        ${games.map(game => `
-                            <div class="game-card">
-                                <div class="game-thumbnail" onclick="playGame(${game.id})">
-                                    ${game.thumbnail ? 
-                                        `<img src="${game.thumbnail}" alt="${game.title}">` : 
-                                        getGameIcon(game.category)
-                                    }
-                                    <span class="game-type-badge ${game.type}">${game.type.toUpperCase()}</span>
-                                </div>
-                                <div class="game-info">
-                                    <h3 class="game-title">${game.title}</h3>
-                                    <div class="game-stats">
-                                        <span class="game-stat">👁️ ${formatNumber(game.plays)}</span>
-                                        <span class="game-stat">❤️ ${formatNumber(game.likes)}</span>
-                                    </div>
-                                    <div style="display: flex; gap: 10px; margin-top: 15px">
-                                        <button class="btn btn-primary" style="flex: 1; padding: 8px" onclick="playGame(${game.id})">
-                                            ▶️ Jogar
-                                        </button>
-                                        <button class="btn btn-danger" style="padding: 8px 12px" onclick="deleteGame(${game.id})">
-                                            🗑️
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                ` : `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📁</div>
-                        <h3>Nenhum jogo publicado ainda</h3>
-                        <p>Publique seu primeiro jogo e compartilhe com o mundo!</p>
-                        <button class="btn btn-primary" style="margin-top: 20px" onclick="openModal('add-game')">
-                            ➕ Publicar Primeiro Jogo
-                        </button>
-                    </div>
-                `}
-            `;
-        }
-
-        function renderGamePlayer() {
-            const game = DB.getGames().find(g => g.id === state.playingGame);
-            if (!game) return '';
-
-            const isLiked = state.currentUser && game.likedBy && game.likedBy.includes(state.currentUser.id);
-
-            return `
-                <div class="game-player-overlay">
-                    <div class="game-player-header">
-                        <div class="game-player-title">
-                            <button class="btn btn-secondary" onclick="closeGame()">
-                                ← Voltar
-                            </button>
-                            <h2>${game.title}</h2>
-                            <span style="color: var(--text-muted)">por ${game.author}</span>
-                        </div>
-                        <div class="game-player-actions">
-                            <button class="btn ${isLiked ? 'btn-danger' : 'btn-secondary'}" onclick="toggleLike(${game.id})">
-                                ${isLiked ? '❤️' : '🤍'} ${game.likes}
-                            </button>
-                            <button class="btn btn-primary" onclick="toggleFullscreen()">
-                                ⛶ Tela Cheia
-                            </button>
-                        </div>
-                    </div>
-                    <div class="game-frame-container">
-                        <iframe 
-                            id="gameFrame"
-                            class="game-frame" 
-                            ${game.type === 'url' ? 
-                                `src="${game.content}"` : 
-                                `srcdoc="${game.content.replace(/"/g, '&quot;')}"`
-                            }
-                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                        ></iframe>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderModal() {
-            let content = '';
-            let title = '';
-
-            switch(state.modal) {
-                case 'login':
-                    title = '🔐 Entrar';
-                    content = `
-                        <form onsubmit="handleLogin(event)">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="loginEmail" required placeholder="seu@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Senha</label>
-                                <input type="password" id="loginPassword" required placeholder="Sua senha">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%">
-                                Entrar
-                            </button>
-                        </form>
-                        <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
-                            Não tem conta? 
-                            <span style="color: var(--primary); cursor: pointer" onclick="openModal('register')">
-                                Cadastre-se
-                            </span>
-                        </p>
-                    `;
-                    break;
-
-                case 'register':
-                    title = '🚀 Criar Conta';
-                    content = `
-                        <form onsubmit="handleRegister(event)">
-                            <div class="form-group">
-                                <label>Nome de Usuário</label>
-                                <input type="text" id="regUsername" required placeholder="Seu nome de usuário">
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="regEmail" required placeholder="seu@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Senha</label>
-                                <input type="password" id="regPassword" required minlength="6" placeholder="Mínimo 6 caracteres">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%">
-                                Criar Conta
-                            </button>
-                        </form>
-                        <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
-                            Já tem conta? 
-                            <span style="color: var(--primary); cursor: pointer" onclick="openModal('login')">
-                                Entrar
-                            </span>
-                        </p>
-                    `;
-                    break;
-
-                case 'add-game':
-                    title = '🎮 Publicar Novo Jogo';
-                    content = `
-                        <form onsubmit="handleAddGame(event)">
-                            <div class="form-group">
-                                <label>Título do Jogo</label>
-                                <input type="text" id="gameTitle" required placeholder="Nome do seu jogo">
-                            </div>
-                            <div class="form-group">
-                                <label>Descrição</label>
-                                <textarea id="gameDesc" required placeholder="Descreva seu jogo..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Categoria</label>
-                                <select id="gameCategory" required>
-                                    ${categories.filter(c => c !== 'Todos').map(c => 
-                                        `<option value="${c}">${c}</option>`
-                                    ).join('')}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Thumbnail URL (opcional)</label>
-                                <input type="url" id="gameThumbnail" placeholder="https://exemplo.com/imagem.jpg">
-                            </div>
-                            <div class="form-group">
-                                <label>Tipo do Jogo</label>
-                                <div class="form-tabs">
-                                    <button type="button" class="form-tab active" onclick="switchGameType('url', this)">
-                                        🔗 URL
-                                    </button>
-                                    <button type="button" class="form-tab" onclick="switchGameType('html', this)">
-                                        📝 HTML
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="form-group" id="gameUrlGroup">
-                                <label>URL do Jogo</label>
-                                <input type="url" id="gameUrl" placeholder="https://exemplo.com/meu-jogo">
-                            </div>
-                            <div class="form-group hidden" id="gameHtmlGroup">
-                                <label>Código HTML do Jogo</label>
-                                <textarea id="gameHtml" placeholder="Cole o código HTML completo do seu jogo aqui..." style="min-height: 200px; font-family: monospace"></textarea>
-                            </div>
-                            <input type="hidden" id="gameType" value="url">
-                            <button type="submit" class="btn btn-success" style="width: 100%">
-                                🚀 Publicar Jogo
-                            </button>
-                        </form>
-                    `;
-                    break;
-            }
-
-            return `
-                <div class="modal-overlay" onclick="if(event.target === this) closeModal()">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h2>${title}</h2>
-                            <button class="modal-close" onclick="closeModal()">×</button>
-                        </div>
-                        <div class="modal-body">
-                            ${content}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // ========== EVENT HANDLERS ==========
-        function attachEventListeners() {
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.dropdown') && state.dropdownOpen) {
-                    closeDropdown();
-                }
+                `;
+                item.onclick = () => openFile(name);
+                container.appendChild(item);
             });
         }
 
-        function navigate(view) {
-            state.view = view;
-            render();
-        }
-
-        function openModal(modal) {
-            state.modal = modal;
-            render();
-        }
-
-        function closeModal() {
-            state.modal = null;
-            render();
-        }
-
-        function toggleDropdown() {
-            state.dropdownOpen = !state.dropdownOpen;
-            render();
-        }
-
-        function closeDropdown() {
-            state.dropdownOpen = false;
-            render();
-        }
-
-        function updateSearch(query) {
-            state.searchQuery = query;
-            render();
-        }
-
-        function selectCategory(category) {
-            state.selectedCategory = category;
-            render();
-        }
-
-        function switchGameType(type, btn) {
-            document.getElementById('gameType').value = type;
-            document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
+        function openFile(name) {
+            if (!state.files.has(name)) return;
             
-            if (type === 'url') {
-                document.getElementById('gameUrlGroup').classList.remove('hidden');
-                document.getElementById('gameHtmlGroup').classList.add('hidden');
-            } else {
-                document.getElementById('gameUrlGroup').classList.add('hidden');
-                document.getElementById('gameHtmlGroup').classList.remove('hidden');
+            state.currentFile = name;
+            const file = state.files.get(name);
+            
+            // Set editor content
+            editor.setValue(file.content);
+            
+            // Set editor mode based on file extension
+            const ext = name.split('.').pop();
+            const modes = {
+                'html': 'htmlmixed',
+                'css': 'css',
+                'js': 'javascript',
+                'json': 'javascript',
+                'py': 'python',
+                'ts': 'javascript',
+                'tsx': 'javascript',
+                'jsx': 'javascript'
+            };
+            editor.setOption('mode', modes[ext] || 'javascript');
+            
+            // Update file type display
+            document.getElementById('fileType').textContent = ext.toUpperCase();
+            
+            // Add to open tabs if not already
+            if (!state.openTabs.includes(name)) {
+                state.openTabs.push(name);
+            }
+            
+            renderFileTree();
+            renderTabs();
+            saveState();
+
+            // Auto-update preview for HTML files
+            if (ext === 'html' && previewVisible) {
+                updatePreview();
             }
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+        function renderTabs() {
+            const container = document.getElementById('editorTabs');
+            container.innerHTML = '';
 
-            const users = DB.getUsers();
-            const user = users.find(u => u.email === email && u.password === password);
+            state.openTabs.forEach(name => {
+                const tab = document.createElement('div');
+                tab.className = `flex items-center gap-2 px-4 h-full cursor-pointer border-r hover:bg-white/5 transition-all ${state.currentFile === name ? 'tab-active' : ''}`;
+                tab.style.borderColor = 'var(--border)';
+                tab.innerHTML = `
+                    <span class="text-sm truncate max-w-32">${name}</span>
+                    <button class="p-0.5 rounded hover:bg-white/10" onclick="event.stopPropagation(); closeTab('${name}')">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                `;
+                tab.onclick = () => openFile(name);
+                container.appendChild(tab);
+            });
+        }
 
-            if (user) {
-                state.currentUser = user;
-                DB.setCurrentUser(user);
-                closeModal();
-                showToast('Login realizado com sucesso! 🎉');
-            } else {
-                showToast('Email ou senha incorretos', 'error');
+        function closeTab(name) {
+            const index = state.openTabs.indexOf(name);
+            if (index > -1) {
+                state.openTabs.splice(index, 1);
+                if (state.currentFile === name) {
+                    state.currentFile = state.openTabs[0] || null;
+                    if (state.currentFile) {
+                        openFile(state.currentFile);
+                    }
+                }
+                renderTabs();
+                saveState();
             }
         }
 
-        function handleRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
+        function createNewFile() {
+            openModal('newFileModal');
+            document.getElementById('newFileName').value = '';
+            document.getElementById('newFileName').focus();
+        }
 
-            const users = DB.getUsers();
+        function confirmNewFile() {
+            const name = document.getElementById('newFileName').value.trim();
+            if (name) {
+                if (state.files.has(name)) {
+                    showNotification('Arquivo já existe!', 'error');
+                    return;
+                }
+                state.files.set(name, { content: '', history: [''] });
+                openFile(name);
+                closeModal('newFileModal');
+                renderFileTree();
+                showNotification(`Arquivo "${name}" criado!`, 'success');
+                saveState();
+            }
+        }
+
+        function deleteFile(name) {
+            if (confirm(`Deletar "${name}"?`)) {
+                state.files.delete(name);
+                closeTab(name);
+                renderFileTree();
+                showNotification(`Arquivo "${name}" deletado!`, 'success');
+                saveState();
+            }
+        }
+
+        function createNewFolder() {
+            showNotification('Pastas serão suportadas em breve!', 'warning');
+        }
+
+        // Editor Operations
+        function handleEditorChange() {
+            if (state.currentFile && state.settings.autoSave) {
+                const file = state.files.get(state.currentFile);
+                file.content = editor.getValue();
+                file.history.push(file.content);
+                if (file.history.length > 50) file.history.shift();
+                saveState();
+
+                if (state.settings.autoPreview && previewVisible) {
+                    debounce(updatePreview, 500)();
+                }
+            }
+            updateTokenCount();
+        }
+
+        function updateCursorPosition() {
+            const pos = editor.getCursor();
+            document.getElementById('cursorPosition').textContent = `Ln ${pos.line + 1}, Col ${pos.ch + 1}`;
+        }
+
+        function updateTokenCount() {
+            const text = document.getElementById('chatInput').value;
+            const tokens = Math.ceil(text.length / 4);
+            document.getElementById('tokenCount').textContent = `${tokens} tokens`;
+        }
+
+        // Preview Operations
+        function togglePreview() {
+            previewVisible = !previewVisible;
+            const panel = document.getElementById('previewPanel');
+            const handle = document.getElementById('previewResizeHandle');
             
-            if (users.find(u => u.email === email)) {
-                showToast('Este email já está cadastrado', 'error');
+            if (previewVisible) {
+                panel.classList.remove('hidden');
+                handle.classList.remove('hidden');
+                updatePreview();
+            } else {
+                panel.classList.add('hidden');
+                handle.classList.add('hidden');
+            }
+        }
+
+        function updatePreview() {
+            const frame = document.getElementById('previewFrame');
+            
+            // Get HTML file content
+            let html = '';
+            if (state.files.has('index.html')) {
+                html = state.files.get('index.html').content;
+            } else if (state.currentFile && state.currentFile.endsWith('.html')) {
+                html = state.files.get(state.currentFile).content;
+            }
+
+            if (!html) {
+                frame.srcdoc = '<div style="padding:20px;color:#666;font-family:sans-serif;">Nenhum arquivo HTML encontrado.</div>';
                 return;
             }
 
-            const newUser = {
-                id: generateId(),
-                username,
-                email,
-                password,
-                createdAt: Date.now()
-            };
+            // Inject CSS and JS if separate files exist
+            let css = state.files.has('styles.css') ? state.files.get('styles.css').content : '';
+            let js = state.files.has('script.js') ? state.files.get('script.js').content : '';
 
-            users.push(newUser);
-            DB.saveUsers(users);
-            state.currentUser = newUser;
-            DB.setCurrentUser(newUser);
-            closeModal();
-            showToast('Conta criada com sucesso! 🎉');
+            // Create sandboxed HTML
+            const sandboxedHtml = html
+                .replace('</head>', `<style>${css}</style></head>`)
+                .replace('</body>', `<script>
+                    (function() {
+                        const originalLog = console.log;
+                        const originalError = console.error;
+                        const originalWarn = console.warn;
+                        
+                        function sendToParent(type, args) {
+                            window.parent.postMessage({
+                                type: 'console',
+                                method: type,
+                                args: Array.from(args).map(a => String(a))
+                            }, '*');
+                        }
+                        
+                        console.log = function() { sendToParent('log', arguments); originalLog.apply(console, arguments); };
+                        console.error = function() { sendToParent('error', arguments); originalError.apply(console, arguments); };
+                        console.warn = function() { sendToParent('warn', arguments); originalWarn.apply(console, arguments); };
+                        
+                        window.onerror = function(msg, url, line) {
+                            sendToParent('error', ['Error: ' + msg + ' (line ' + line + ')']);
+                        };
+                    })();
+                    
+                    ${js}
+                <\/script></body>`);
+
+            frame.srcdoc = sandboxedHtml;
+            logToConsole('Preview atualizado', 'info');
         }
 
-        function handleAddGame(e) {
-            e.preventDefault();
+        function refreshPreview() {
+            updatePreview();
+            showNotification('Preview atualizado!', 'success');
+        }
+
+        function openPreviewExternal() {
+            const html = state.files.has('index.html') ? state.files.get('index.html').content : '';
+            const css = state.files.has('styles.css') ? state.files.get('styles.css').content : '';
+            const js = state.files.has('script.js') ? state.files.get('script.js').content : '';
             
-            const type = document.getElementById('gameType').value;
-            const title = document.getElementById('gameTitle').value;
-            const description = document.getElementById('gameDesc').value;
-            const category = document.getElementById('gameCategory').value;
-            const thumbnail = document.getElementById('gameThumbnail').value;
+            const fullHtml = html
+                .replace('</head>', `<style>${css}</style></head>`)
+                .replace('</body>', `<script>${js}<\/script></body>`);
             
-            let content = '';
-            if (type === 'url') {
-                content = document.getElementById('gameUrl').value;
-                if (!content) {
-                    showToast('Insira a URL do jogo', 'error');
-                    return;
-                }
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        // Console Operations
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'console') {
+                logToConsole(event.data.args.join(' '), event.data.method);
+            }
+        });
+
+        function logToConsole(message, type = 'log') {
+            const console = document.getElementById('consoleOutput');
+            const colors = {
+                'log': 'text-gray-300',
+                'info': 'text-blue-400',
+                'warn': 'text-yellow-400',
+                'error': 'text-red-400'
+            };
+            
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `${colors[type]} mb-1`;
+            div.innerHTML = `<span class="text-gray-500">[${time}]</span> ${message}`;
+            console.appendChild(div);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+        }
+
+        // Chat Operations
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+            updateTokenCount();
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Generate AI response
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateAIResponse(message);
+                addChatMessage(response, 'ai');
+            }, 1000 + Math.random() * 1500);
+        }
+
+        function addChatMessage(content, type) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'chat-message';
+
+            if (type === 'user') {
+                div.innerHTML = `
+                    <div class="flex items-start gap-3 justify-end">
+                        <div class="flex-1 max-w-[80%]">
+                            <div class="text-xs text-gray-500 mb-1 text-right">Você</div>
+                            <div class="p-3 rounded-lg bg-indigo-500/20 text-right">
+                                <p class="text-sm">${escapeHtml(content)}</p>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-xs font-bold">U</span>
+                        </div>
+                    </div>
+                `;
             } else {
-                content = document.getElementById('gameHtml').value;
-                if (!content) {
-                    showToast('Insira o código HTML do jogo', 'error');
-                    return;
-                }
+                div.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-xs font-bold">AI</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-xs text-gray-500 mb-1">AXES IA</div>
+                            <div class="p-3 rounded-lg" style="background: var(--bg-tertiary);">
+                                <div class="text-sm prose prose-invert max-w-none">${content}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
-            const games = DB.getGames();
-            const newGame = {
-                id: generateId(),
-                title,
-                description,
-                type,
-                content,
-                thumbnail,
-                category,
-                author: state.currentUser.username,
-                authorId: state.currentUser.id,
-                plays: 0,
-                likes: 0,
-                likedBy: [],
-                createdAt: Date.now()
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            state.chatHistory.push({ type, content });
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.id = 'typingIndicator';
+            div.className = 'chat-message';
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-xs font-bold">AI</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">AXES IA</div>
+                        <div class="p-3 rounded-lg flex items-center gap-2" style="background: var(--bg-tertiary);">
+                            <div class="flex gap-1">
+                                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce"></span>
+                                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.1s;"></span>
+                                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style="animation-delay: 0.2s;"></span>
+                            </div>
+                            <span class="text-sm text-gray-400">Pensando...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        function generateAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Code generation patterns
+            if (lowerMessage.includes('cri') && (lowerMessage.includes('site') || lowerMessage.includes('página') || lowerMessage.includes('pagina'))) {
+                const code = generateWebsite(message);
+                return `Perfeito! 🚀 Criei um site moderno para você. Aqui está o código:
+
+<pre class="p-3 rounded-lg mt-2 overflow-x-auto" style="background: var(--bg-primary);"><code class="text-green-400 text-xs">${escapeHtml(code)}</code></pre>
+
+<p class="mt-3">✅ Código adicionado ao arquivo <strong>index.html</strong></p>
+<p class="mt-1">💡 Clique em <strong>Preview</strong> para visualizar o resultado!</p>`;
+            }
+            
+            if (lowerMessage.includes('cri') && lowerMessage.includes('api')) {
+                return `Excelente! Vou criar uma API REST completa. 🔥
+
+<pre class="p-3 rounded-lg mt-2 overflow-x-auto" style="background: var(--bg-primary);"><code class="text-blue-400 text-xs">// api.js - API REST com Express
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+// Middleware de autenticação
+const auth = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ error: 'Token required' });
+  next();
+};
+
+// Rotas
+app.get('/api/v1/users', auth, (req, res) => {
+  res.json({ users: [] });
+});
+
+app.post('/api/v1/users', auth, (req, res) => {
+  const { name, email } = req.body;
+  res.status(201).json({ id: Date.now(), name, email });
+});
+
+app.listen(3000, () => console.log('API running on port 3000'));</code></pre>
+
+<p class="mt-3">✅ API criada com sucesso!</p>
+<p class="mt-1">📚 Inclui: autenticação, CRUD de usuários, validação.</p>`;
+            }
+            
+            if (lowerMessage.includes('refator')) {
+                return `Vou analisar e refatorar seu código! 🔧
+
+<p class="mt-2">Princípios aplicados:</p>
+<ul class="list-disc ml-4 mt-1 text-gray-400 text-sm">
+<li>Clean Code</li>
+<li>SOLID Principles</li>
+<li>DRY (Don't Repeat Yourself)</li>
+<li>Separation of Concerns</li>
+</ul>
+
+<p class="mt-3">Cole o código que deseja refatorar e eu farei uma análise completa com sugestões de melhoria! 💪</p>`;
+            }
+
+            if (lowerMessage.includes('debug') || lowerMessage.includes('erro')) {
+                return `Modo Debug ativado! 🐛
+
+<p class="mt-2">Para me ajudar a encontrar o erro, por favor:</p>
+<ol class="list-decimal ml-4 mt-1 text-gray-400 text-sm">
+<li>Cole o código com erro</li>
+<li>Descreva o comportamento esperado</li>
+<li>Descreva o que está acontecendo</li>
+</ol>
+
+<p class="mt-3">Vou analisar linha por linha e identificar o problema! 🔍</p>`;
+            }
+
+            if (lowerMessage.includes('explicar') || lowerMessage.includes('explique')) {
+                return `Claro! Sou excelente em explicar conceitos técnicos. 📚
+
+<p class="mt-2">Posso explicar:</p>
+<ul class="list-disc ml-4 mt-1 text-gray-400 text-sm">
+<li>Algoritmos e estruturas de dados</li>
+<li>Padrões de projeto (Design Patterns)</li>
+<li>Arquiteturas de software</li>
+<li>Linguagens e frameworks</li>
+<li>Conceitos de DevOps e Cloud</li>
+</ul>
+
+<p class="mt-3">O que você gostaria que eu explicasse? 🤔</p>`;
+            }
+
+            // Default response
+            return `Entendi! 💡 Você quer: <strong>${escapeHtml(message)}</strong>
+
+<p class="mt-2">Posso ajudar de várias formas:</p>
+<ul class="list-disc ml-4 mt-1 text-gray-400 text-sm">
+<li>🌐 Criar sites e aplicações web</li>
+<li>⚡ Desenvolver APIs e backends</li>
+<li>🔧 Refatorar código existente</li>
+<li>🐛 Debug e resolução de problemas</li>
+<li>📚 Explicar conceitos técnicos</li>
+</ul>
+
+<p class="mt-3">Me dê mais detalhes sobre o que você precisa e vou gerar o código completo! 🚀</p>`;
+        }
+
+        function generateWebsite(description) {
+            const code = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Site</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-indigo-900 min-h-screen">
+    <nav class="p-6 flex justify-between items-center">
+        <div class="text-2xl font-bold text-white">🚀 MeuSite</div>
+        <div class="space-x-6 text-gray-300">
+            <a href="#" class="hover:text-white">Home</a>
+            <a href="#" class="hover:text-white">Sobre</a>
+            <a href="#" class="hover:text-white">Contato</a>
+        </div>
+    </nav>
+    
+    <main class="container mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl font-bold text-white mb-6">
+            Bem-vindo ao Futuro
+        </h1>
+        <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Criado com AXES IA - A plataforma de IA mais avançada para desenvolvedores.
+        </p>
+        <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all transform hover:scale-105">
+            Começar Agora
+        </button>
+    </main>
+</body>
+</html>`;
+            
+            // Add to files
+            state.files.set('index.html', { content: code, history: [code] });
+            saveState();
+            renderFileTree();
+            openFile('index.html');
+            
+            return code;
+        }
+
+        function quickAction(action) {
+            const prompts = {
+                'criar site': 'Crie um site moderno e responsivo com landing page',
+                'criar api': 'Crie uma API REST completa com autenticação',
+                'refatorar': 'Refatore o código atual seguindo boas práticas',
+                'debug': 'Analise o código e encontre possíveis bugs',
+                'explicar': 'Explique o código atual em detalhes'
             };
-
-            games.push(newGame);
-            DB.saveGames(games);
-            closeModal();
-            showToast('Jogo publicado com sucesso! 🎮');
+            
+            document.getElementById('chatInput').value = prompts[action] || action;
+            sendMessage();
         }
 
-        function playGame(gameId) {
-            const games = DB.getGames();
-            const gameIndex = games.findIndex(g => g.id === gameId);
+        function clearChat() {
+            document.getElementById('chatMessages').innerHTML = '';
+            state.chatHistory = [];
+            addChatMessage('Olá! Sou a <strong class="gradient-text">AXES IA</strong>. Como posso ajudar você hoje? 🚀', 'ai');
+        }
+
+        // Export Operations
+        async function exportProject() {
+            const zip = new JSZip();
             
-            if (gameIndex !== -1) {
-                games[gameIndex].plays++;
-                DB.saveGames(games);
-                state.playingGame = gameId;
-                render();
+            state.files.forEach((file, name) => {
+                zip.file(name, file.content);
+            });
+
+            // Add README
+            zip.file('README.md', `# Projeto AXES IA
+
+Este projeto foi criado com [AXES IA](https://axes.ia) - A plataforma profissional de IA para desenvolvedores.
+
+## Arquivos
+${Array.from(state.files.keys()).map(f => `- ${f}`).join('\n')}
+
+## Como usar
+1. Abra o arquivo \`index.html\` no navegador
+2. Ou use um servidor local: \`npx serve\`
+
+---
+Gerado automaticamente por AXES IA v2.0
+`);
+
+            const content = await zip.generateAsync({ type: 'blob' });
+            saveAs(content, 'projeto-axes-ia.zip');
+            showNotification('Projeto exportado com sucesso!', 'success');
+        }
+
+        // Theme Operations
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            setTheme(state.theme);
+        }
+
+        function setTheme(theme) {
+            state.theme = theme;
+            document.body.classList.toggle('light-mode', theme === 'light');
+            document.getElementById('themeSelect').value = theme;
+            
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'light') {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+            }
+            
+            editor.setOption('theme', theme === 'light' ? 'default' : 'dracula');
+            saveState();
+        }
+
+        // Section Navigation
+        function showSection(section) {
+            ['workspace', 'api', 'docs', 'settings'].forEach(s => {
+                document.getElementById(`${s}Section`).classList.toggle('hidden', s !== section);
+            });
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.toggle('bg-white/10', btn.dataset.section === section);
+            });
+        }
+
+        // Modal Operations
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        // API Key Operations
+        function generateNewApiKey() {
+            state.apiKey = 'axes_sk_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            document.getElementById('apiKeyDisplay').textContent = state.apiKey;
+            showNotification('Nova API Key gerada!', 'success');
+            saveState();
+        }
+
+        function copyApiKey() {
+            navigator.clipboard.writeText(state.apiKey);
+            showNotification('API Key copiada!', 'success');
+        }
+
+        // Settings Operations
+        function setFontSize(size) {
+            state.settings.fontSize = parseInt(size);
+            editor.getWrapperElement().style.fontSize = size + 'px';
+            saveState();
+        }
+
+        function exportAllData() {
+            const data = JSON.stringify({
+                files: Array.from(state.files.entries()),
+                chatHistory: state.chatHistory,
+                settings: state.settings
+            }, null, 2);
+            
+            const blob = new Blob([data], { type: 'application/json' });
+            saveAs(blob, 'axes-ia-backup.json');
+            showNotification('Dados exportados!', 'success');
+        }
+
+        function clearAllData() {
+            if (confirm('Tem certeza? Isso irá apagar todos os arquivos e histórico.')) {
+                localStorage.removeItem('axesState');
+                state.files.clear();
+                state.chatHistory = [];
+                state.openTabs = [];
+                state.currentFile = null;
+                createDefaultProject();
+                renderFileTree();
+                renderTabs();
+                clearChat();
+                showNotification('Dados limpos!', 'success');
             }
         }
 
-        function closeGame() {
-            state.playingGame = null;
-            render();
-        }
+        // Resize Operations
+        function startResize(event, target) {
+            event.preventDefault();
+            const startX = event.clientX;
+            const sidebar = document.getElementById('sidebar');
+            const startWidth = sidebar.offsetWidth;
 
-        function toggleLike(gameId) {
-            if (!state.currentUser) {
-                openModal('login');
-                return;
+            function doResize(e) {
+                const diff = e.clientX - startX;
+                const newWidth = Math.max(200, Math.min(400, startWidth + diff));
+                sidebar.style.width = newWidth + 'px';
             }
 
-            const games = DB.getGames();
-            const gameIndex = games.findIndex(g => g.id === gameId);
+            function stopResize() {
+                document.removeEventListener('mousemove', doResize);
+                document.removeEventListener('mouseup', stopResize);
+            }
+
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notifications');
+            const colors = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'warning': 'bg-yellow-500',
+                'info': 'bg-indigo-500'
+            };
             
-            if (gameIndex !== -1) {
-                const game = games[gameIndex];
-                if (!game.likedBy) game.likedBy = [];
+            const notification = document.createElement('div');
+            notification.className = `notification ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-2 hover:opacity-70">×</button>
+            `;
+            container.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // Utility Functions
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // State Persistence
+        function saveState() {
+            const data = {
+                files: Array.from(state.files.entries()),
+                currentFile: state.currentFile,
+                openTabs: state.openTabs,
+                apiKey: state.apiKey,
+                theme: state.theme,
+                settings: state.settings
+            };
+            localStorage.setItem('axesState', JSON.stringify(data));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('axesState');
+            if (saved) {
+                const data = JSON.parse(saved);
+                state.files = new Map(data.files || []);
+                state.currentFile = data.currentFile;
+                state.openTabs = data.openTabs || [];
+                state.apiKey = data.apiKey || state.apiKey;
+                state.theme = data.theme || 'dark';
+                state.settings = { ...state.settings, ...data.settings };
                 
-                const likedIndex = game.likedBy.indexOf(state.currentUser.id);
-                if (likedIndex !== -1) {
-                    game.likedBy.splice(likedIndex, 1);
-                    game.likes--;
-                    showToast('Like removido');
-                } else {
-                    game.likedBy.push(state.currentUser.id);
-                    game.likes++;
-                    showToast('Você curtiu este jogo! ❤️');
-                }
-                
-                DB.saveGames(games);
-                render();
+                setTheme(state.theme);
             }
         }
-
-        function deleteGame(gameId) {
-            if (!confirm('Tem certeza que deseja excluir este jogo?')) return;
-            
-            let games = DB.getGames();
-            games = games.filter(g => g.id !== gameId);
-            DB.saveGames(games);
-            showToast('Jogo excluído');
-            render();
-        }
-
-        function toggleFullscreen() {
-            const iframe = document.getElementById('gameFrame');
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen();
-            } else if (iframe.webkitRequestFullscreen) {
-                iframe.webkitRequestFullscreen();
-            }
-        }
-
-        function logout() {
-            DB.logout();
-            state.currentUser = null;
-            state.dropdownOpen = false;
-            navigate('home');
-            showToast('Você saiu da sua conta');
-        }
-
-        // ========== INIT ==========
-        render();
     </script>
 </body>
 </html>
