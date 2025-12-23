@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 GameHub - Sua Plataforma de Jogos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5b4cdb;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --bg-dark: #0a0a0f;
+            --bg-card: #16161f;
+            --bg-card-hover: #1e1e2a;
+            --text: #ffffff;
+            --text-muted: #a0a0b0;
+            --success: #00b894;
+            --danger: #e74c3c;
+            --warning: #fdcb6e;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a25 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(108, 92, 231, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            background: rgba(108, 92, 231, 0.2);
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            background: rgba(108, 92, 231, 0.15);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00a884);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+        }
+
+        .btn-icon {
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.3) 0%, rgba(0, 206, 201, 0.2) 100%);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Search Bar */
+        .search-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid rgba(108, 92, 231, 0.3);
+            border-radius: 12px;
+            background: var(--bg-card);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .search-bar::before {
+            content: '🔍';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(108, 92, 231, 0.3);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Games Grid */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(108, 92, 231, 0.3);
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-type-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .game-type-badge.html {
+            color: var(--warning);
+        }
+
+        .game-type-badge.url {
+            color: var(--secondary);
+        }
+
+        .game-info {
+            padding: 20px;
+        }
+
+        .game-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .game-author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 15px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .game-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(108, 92, 231, 0.3);
+            border-radius: 10px;
+            background: var(--bg-dark);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-tab {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(108, 92, 231, 0.3);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Game Player */
+        .game-player-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-player-header {
+            padding: 15px 25px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(108, 92, 231, 0.3);
+        }
+
+        .game-player-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .game-player-title h2 {
+            font-size: 1.2rem;
+        }
+
+        .game-player-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .game-frame-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #000;
+        }
+
+        .game-frame {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+        }
+
+        /* Profile */
+        .profile-header {
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.3) 0%, rgba(253, 121, 168, 0.2) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            border: 4px solid var(--primary);
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .profile-stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--bg-card);
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            min-width: 180px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 100;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(108, 92, 231, 0.2);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .main-container {
+                padding: 20px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 15px 25px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // ========== DATABASE ==========
+        const DB = {
+            getUsers: () => JSON.parse(localStorage.getItem('gamehub_users') || '[]'),
+            saveUsers: (users) => localStorage.setItem('gamehub_users', JSON.stringify(users)),
+            getGames: () => JSON.parse(localStorage.getItem('gamehub_games') || '[]'),
+            saveGames: (games) => localStorage.setItem('gamehub_games', JSON.stringify(games)),
+            getCurrentUser: () => JSON.parse(localStorage.getItem('gamehub_current_user') || 'null'),
+            setCurrentUser: (user) => localStorage.setItem('gamehub_current_user', JSON.stringify(user)),
+            logout: () => localStorage.removeItem('gamehub_current_user')
+        };
+
+        // Initialize with sample games if empty
+        if (DB.getGames().length === 0) {
+            const sampleGames = [
+                {
+                    id: 1,
+                    title: "Snake Game",
+                    description: "O clássico jogo da cobrinha!",
+                    type: "html",
+                    content: `<!DOCTYPE html><html><head><style>*{margin:0;padding:0}canvas{background:#1a1a2e;display:block;margin:20px auto;border-radius:10px}</style></head><body><canvas id="c" width="400" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');let s=[{x:200,y:200}],d={x:20,y:0},f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20};document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&d.y===0)d={x:0,y:-20};if(e.key==='ArrowDown'&&d.y===0)d={x:0,y:20};if(e.key==='ArrowLeft'&&d.x===0)d={x:-20,y:0};if(e.key==='ArrowRight'&&d.x===0)d={x:20,y:0}});setInterval(()=>{const h={x:s[0].x+d.x,y:s[0].y+d.y};if(h.x<0||h.x>=400||h.y<0||h.y>=400||s.some(p=>p.x===h.x&&p.y===h.y)){s=[{x:200,y:200}];d={x:20,y:0};return}s.unshift(h);if(h.x===f.x&&h.y===f.y){f={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20}}else{s.pop()}c.fillStyle='#1a1a2e';c.fillRect(0,0,400,400);c.fillStyle='#00cec9';s.forEach(p=>c.fillRect(p.x,p.y,18,18));c.fillStyle='#fd79a8';c.fillRect(f.x,f.y,18,18)},100);<\/script></body></html>`,
+                    thumbnail: "",
+                    category: "Arcade",
+                    author: "GameHub",
+                    authorId: 0,
+                    plays: 1250,
+                    likes: 89,
+                    likedBy: [],
+                    createdAt: Date.now() - 86400000 * 7
+                },
+                {
+                    id: 2,
+                    title: "Pong Game",
+                    description: "Jogue Pong contra o computador!",
+                    type: "html",
+                    content: `<!DOCTYPE html><html><head><style>*{margin:0}canvas{background:#0a0a0f;display:block;margin:20px auto}</style></head><body><canvas id="c" width="600" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');let p1=150,p2=150,bx=300,by=200,dx=4,dy=4,s1=0,s2=0;document.addEventListener('mousemove',e=>{const r=c.canvas.getBoundingClientRect();p1=e.clientY-r.top-40});setInterval(()=>{bx+=dx;by+=dy;if(by<=0||by>=400)dy=-dy;if(bx<=20&&by>p1&&by<p1+80){dx=-dx;dx*=1.05}if(bx>=570&&by>p2&&by<p2+80){dx=-dx;dx*=1.05}if(bx<0){s2++;bx=300;by=200;dx=4;dy=4}if(bx>600){s1++;bx=300;by=200;dx=-4;dy=4}p2+=(by-p2-40)*0.08;c.fillStyle='#0a0a0f';c.fillRect(0,0,600,400);c.fillStyle='#6c5ce7';c.fillRect(10,p1,10,80);c.fillStyle='#00cec9';c.fillRect(580,p2,10,80);c.fillStyle='#fff';c.beginPath();c.arc(bx,by,8,0,Math.PI*2);c.fill();c.font='30px Arial';c.fillText(s1,250,50);c.fillText(s2,330,50)},16);<\/script></body></html>`,
+                    thumbnail: "",
+                    category: "Arcade",
+                    author: "GameHub",
+                    authorId: 0,
+                    plays: 890,
+                    likes: 67,
+                    likedBy: [],
+                    createdAt: Date.now() - 86400000 * 5
+                },
+                {
+                    id: 3,
+                    title: "Memory Game",
+                    description: "Teste sua memória com este jogo de cartas!",
+                    type: "html",
+                    content: `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial}.grid{display:grid;grid-template-columns:repeat(4,80px);gap:10px}.card{width:80px;height:80px;background:#6c5ce7;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;transition:.3s}.card.flipped{background:#00cec9}.card.matched{background:#00b894}h2{color:#fff;margin:20px}</style></head><body><h2>Encontre os pares!</h2><div class="grid" id="grid"></div><script>const e=['🎮','🎲','🎯','🎪','🎨','🎭','🎪','🎯','🎲','🎮','🎨','🎭'],g=document.getElementById('grid');let f=[],m=[];e.sort(()=>Math.random()-.5).forEach((s,i)=>{const c=document.createElement('div');c.className='card';c.dataset.i=i;c.dataset.s=s;c.onclick=()=>{if(f.length<2&&!c.classList.contains('flipped')&&!c.classList.contains('matched')){c.classList.add('flipped');c.textContent=s;f.push(c);if(f.length===2){if(f[0].dataset.s===f[1].dataset.s){f.forEach(x=>x.classList.add('matched'));f=[];m.push(1);if(m.length===6)setTimeout(()=>alert('Você venceu!'),300)}else{setTimeout(()=>{f.forEach(x=>{x.classList.remove('flipped');x.textContent=''});f=[]},1000)}}}};g.appendChild(c)});<\/script></body></html>`,
+                    thumbnail: "",
+                    category: "Puzzle",
+                    author: "GameHub",
+                    authorId: 0,
+                    plays: 567,
+                    likes: 45,
+                    likedBy: [],
+                    createdAt: Date.now() - 86400000 * 3
+                },
+                {
+                    id: 4,
+                    title: "Flappy Bird Clone",
+                    description: "O famoso jogo Flappy Bird!",
+                    type: "html",
+                    content: `<!DOCTYPE html><html><head><style>*{margin:0}canvas{display:block;margin:20px auto;border-radius:10px}</style></head><body><canvas id="c" width="400" height="600"></canvas><script>const c=document.getElementById('c').getContext('2d');let y=300,v=0,p=[],s=0,g=false;document.onclick=()=>{v=-8;if(g){y=300;v=0;p=[];s=0;g=false}};setInterval(()=>{if(g)return;v+=0.4;y+=v;if(p.length===0||p[p.length-1].x<250){p.push({x:400,h:Math.random()*200+100})}p=p.filter(x=>x.x>-60);p.forEach(x=>{x.x-=3;if(x.x===47)s++});c.fillStyle='#87CEEB';c.fillRect(0,0,400,600);c.fillStyle='#228B22';c.fillRect(0,550,400,50);p.forEach(x=>{c.fillStyle='#2ecc71';c.fillRect(x.x,0,50,x.h);c.fillRect(x.x,x.h+150,50,600)});c.fillStyle='#f1c40f';c.beginPath();c.arc(50,y,20,0,Math.PI*2);c.fill();c.fillStyle='#fff';c.font='30px Arial';c.fillText(s,200,50);p.forEach(x=>{if(50>x.x&&50<x.x+50&&(y<x.h||y>x.h+150))g=true});if(y>530||y<0)g=true;if(g){c.fillStyle='rgba(0,0,0,0.5)';c.fillRect(0,0,400,600);c.fillStyle='#fff';c.fillText('Game Over!',140,300);c.fillText('Clique para reiniciar',80,350)}},20);<\/script></body></html>`,
+                    thumbnail: "",
+                    category: "Arcade",
+                    author: "GameHub",
+                    authorId: 0,
+                    plays: 2340,
+                    likes: 156,
+                    likedBy: [],
+                    createdAt: Date.now() - 86400000 * 10
+                },
+                {
+                    id: 5,
+                    title: "Tetris",
+                    description: "O clássico jogo de blocos!",
+                    type: "html",
+                    content: `<!DOCTYPE html><html><head><style>*{margin:0}body{background:#1a1a2e;display:flex;justify-content:center;padding:20px}canvas{border-radius:5px}</style></head><body><canvas id="c" width="200" height="400"></canvas><script>const c=document.getElementById('c').getContext('2d');const C=['#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#dfe6e9','#a29bfe'];const P=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];let g=Array(20).fill().map(()=>Array(10).fill(0));let p,px,py,pc;function np(){p=P[Math.floor(Math.random()*7)];px=4;py=0;pc=C[Math.floor(Math.random()*7)]}np();function d(){c.fillStyle='#2d3436';c.fillRect(0,0,200,400);for(let y=0;y<20;y++)for(let x=0;x<10;x++)if(g[y][x]){c.fillStyle=g[y][x];c.fillRect(x*20+1,y*20+1,18,18)}for(let y=0;y<p.length;y++)for(let x=0;x<p[0].length;x++)if(p[y][x]){c.fillStyle=pc;c.fillRect((px+x)*20+1,(py+y)*20+1,18,18)}}function v(nx,ny,np){for(let y=0;y<np.length;y++)for(let x=0;x<np[0].length;x++)if(np[y][x]){if(nx+x<0||nx+x>=10||ny+y>=20)return false;if(g[ny+y]&&g[ny+y][nx+x])return false}return true}function m(){for(let y=0;y<p.length;y++)for(let x=0;x<p[0].length;x++)if(p[y][x])g[py+y][px+x]=pc;for(let y=19;y>=0;y--)if(g[y].every(x=>x)){g.splice(y,1);g.unshift(Array(10).fill(0));y++}np();if(!v(px,py,p))g=Array(20).fill().map(()=>Array(10).fill(0))}document.onkeydown=e=>{if(e.key==='ArrowLeft'&&v(px-1,py,p))px--;if(e.key==='ArrowRight'&&v(px+1,py,p))px++;if(e.key==='ArrowDown'&&v(px,py+1,p))py++;if(e.key==='ArrowUp'){const r=p[0].map((x,i)=>p.map(r=>r[i]).reverse());if(v(px,py,r))p=r}d()};setInterval(()=>{if(v(px,py+1,p))py++;else m();d()},500);d();<\/script></body></html>`,
+                    thumbnail: "",
+                    category: "Puzzle",
+                    author: "GameHub",
+                    authorId: 0,
+                    plays: 1890,
+                    likes: 134,
+                    likedBy: [],
+                    createdAt: Date.now() - 86400000 * 14
+                }
+            ];
+            DB.saveGames(sampleGames);
+        }
+
+        // ========== STATE ==========
+        let state = {
+            currentUser: DB.getCurrentUser(),
+            view: 'home',
+            modal: null,
+            playingGame: null,
+            searchQuery: '',
+            selectedCategory: 'Todos',
+            dropdownOpen: false
+        };
+
+        const categories = ['Todos', 'Arcade', 'Puzzle', 'Ação', 'Aventura', 'Corrida', 'Esporte', 'Outros'];
+
+        // ========== HELPERS ==========
+        function showToast(message, type = 'success') {
+            const container = document.querySelector('.toast-container') || (() => {
+                const c = document.createElement('div');
+                c.className = 'toast-container';
+                document.body.appendChild(c);
+                return c;
+            })();
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function generateId() {
+            return Date.now() + Math.random();
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function timeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            if (seconds < 60) return 'agora';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' min';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+            return Math.floor(seconds / 86400) + 'd';
+        }
+
+        function getGameIcon(category) {
+            const icons = {
+                'Arcade': '👾',
+                'Puzzle': '🧩',
+                'Ação': '⚔️',
+                'Aventura': '🗺️',
+                'Corrida': '🏎️',
+                'Esporte': '⚽',
+                'Outros': '🎮'
+            };
+            return icons[category] || '🎮';
+        }
+
+        // ========== RENDER ==========
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${renderHeader()}
+                ${state.playingGame ? renderGamePlayer() : ''}
+                ${state.modal ? renderModal() : ''}
+                <div class="main-container">
+                    ${state.view === 'home' ? renderHome() : ''}
+                    ${state.view === 'profile' ? renderProfile() : ''}
+                    ${state.view === 'my-games' ? renderMyGames() : ''}
+                </div>
+            `;
+            attachEventListeners();
+        }
+
+        function renderHeader() {
+            return `
+                <header class="header">
+                    <div class="logo" onclick="navigate('home')">
+                        <span class="logo-icon">🎮</span>
+                        <span>GameHub</span>
+                    </div>
+                    <nav class="nav-links">
+                        <span class="nav-link ${state.view === 'home' ? 'active' : ''}" onclick="navigate('home')">
+                            🏠 Início
+                        </span>
+                        ${state.currentUser ? `
+                            <span class="nav-link ${state.view === 'my-games' ? 'active' : ''}" onclick="navigate('my-games')">
+                                📁 Meus Jogos
+                            </span>
+                        ` : ''}
+                    </nav>
+                    <div class="user-menu">
+                        ${state.currentUser ? `
+                            <button class="btn btn-primary" onclick="openModal('add-game')">
+                                ➕ Publicar Jogo
+                            </button>
+                            <div class="dropdown">
+                                <div class="user-avatar" onclick="toggleDropdown()">
+                                    ${state.currentUser.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="dropdown-menu ${state.dropdownOpen ? 'show' : ''}" id="dropdown">
+                                    <div class="dropdown-item" onclick="navigate('profile'); closeDropdown()">
+                                        👤 Meu Perfil
+                                    </div>
+                                    <div class="dropdown-item" onclick="navigate('my-games'); closeDropdown()">
+                                        📁 Meus Jogos
+                                    </div>
+                                    <div class="dropdown-item danger" onclick="logout()">
+                                        🚪 Sair
+                                    </div>
+                                </div>
+                            </div>
+                        ` : `
+                            <button class="btn btn-secondary" onclick="openModal('login')">Entrar</button>
+                            <button class="btn btn-primary" onclick="openModal('register')">Cadastrar</button>
+                        `}
+                    </div>
+                </header>
+            `;
+        }
+
+        function renderHome() {
+            const games = DB.getGames();
+            const filteredGames = games.filter(game => {
+                const matchesSearch = game.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+                                     game.description.toLowerCase().includes(state.searchQuery.toLowerCase());
+                const matchesCategory = state.selectedCategory === 'Todos' || game.category === state.selectedCategory;
+                return matchesSearch && matchesCategory;
+            }).sort((a, b) => b.createdAt - a.createdAt);
+
+            return `
+                <div class="hero">
+                    <h1>🎮 Bem-vindo ao GameHub!</h1>
+                    <p>Descubra, jogue e publique jogos incríveis criados pela comunidade</p>
+                    <div class="hero-buttons">
+                        ${state.currentUser ? `
+                            <button class="btn btn-primary" onclick="openModal('add-game')">
+                                🚀 Publicar Meu Jogo
+                            </button>
+                        ` : `
+                            <button class="btn btn-primary" onclick="openModal('register')">
+                                🚀 Começar Agora
+                            </button>
+                        `}
+                        <button class="btn btn-secondary" onclick="document.querySelector('.games-grid').scrollIntoView({behavior: 'smooth'})">
+                            🎮 Ver Jogos
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar jogos..." 
+                            value="${state.searchQuery}"
+                            oninput="updateSearch(this.value)"
+                        >
+                    </div>
+                    <div class="categories">
+                        ${categories.map(cat => `
+                            <button class="category-btn ${state.selectedCategory === cat ? 'active' : ''}" 
+                                    onclick="selectCategory('${cat}')">
+                                ${cat}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <h2 class="section-title">
+                    🔥 ${state.selectedCategory === 'Todos' ? 'Todos os Jogos' : state.selectedCategory}
+                    <span style="color: var(--text-muted); font-size: 1rem;">(${filteredGames.length})</span>
+                </h2>
+
+                ${filteredGames.length > 0 ? `
+                    <div class="games-grid">
+                        ${filteredGames.map(game => renderGameCard(game)).join('')}
+                    </div>
+                ` : `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎮</div>
+                        <h3>Nenhum jogo encontrado</h3>
+                        <p>Tente buscar por outro termo ou categoria</p>
+                    </div>
+                `}
+            `;
+        }
+
+        function renderGameCard(game) {
+            const isLiked = state.currentUser && game.likedBy && game.likedBy.includes(state.currentUser.id);
+            return `
+                <div class="game-card" onclick="playGame(${game.id})">
+                    <div class="game-thumbnail">
+                        ${game.thumbnail ? 
+                            `<img src="${game.thumbnail}" alt="${game.title}">` : 
+                            getGameIcon(game.category)
+                        }
+                        <span class="game-type-badge ${game.type}">${game.type.toUpperCase()}</span>
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-author">por ${game.author}</p>
+                        <div class="game-stats">
+                            <span class="game-stat">👁️ ${formatNumber(game.plays)}</span>
+                            <span class="game-stat">${isLiked ? '❤️' : '🤍'} ${formatNumber(game.likes)}</span>
+                            <span class="game-stat">🕐 ${timeAgo(game.createdAt)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProfile() {
+            if (!state.currentUser) {
+                navigate('home');
+                return '';
+            }
+
+            const games = DB.getGames().filter(g => g.authorId === state.currentUser.id);
+            const totalPlays = games.reduce((sum, g) => sum + g.plays, 0);
+            const totalLikes = games.reduce((sum, g) => sum + g.likes, 0);
+
+            return `
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        ${state.currentUser.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="profile-info">
+                        <h1>${state.currentUser.username}</h1>
+                        <p style="color: var(--text-muted)">${state.currentUser.email}</p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">${games.length}</div>
+                                <div class="profile-stat-label">Jogos</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">${formatNumber(totalPlays)}</div>
+                                <div class="profile-stat-label">Plays</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="profile-stat-value">${formatNumber(totalLikes)}</div>
+                                <div class="profile-stat-label">Likes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">🎮 Meus Jogos</h2>
+                ${games.length > 0 ? `
+                    <div class="games-grid">
+                        ${games.map(game => renderGameCard(game)).join('')}
+                    </div>
+                ` : `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎮</div>
+                        <h3>Você ainda não publicou nenhum jogo</h3>
+                        <p>Clique no botão abaixo para publicar seu primeiro jogo!</p>
+                        <button class="btn btn-primary" style="margin-top: 20px" onclick="openModal('add-game')">
+                            ➕ Publicar Jogo
+                        </button>
+                    </div>
+                `}
+            `;
+        }
+
+        function renderMyGames() {
+            if (!state.currentUser) {
+                navigate('home');
+                return '';
+            }
+
+            const games = DB.getGames().filter(g => g.authorId === state.currentUser.id);
+
+            return `
+                <h2 class="section-title" style="margin-bottom: 30px">
+                    📁 Meus Jogos
+                    <button class="btn btn-primary" style="margin-left: auto" onclick="openModal('add-game')">
+                        ➕ Novo Jogo
+                    </button>
+                </h2>
+
+                ${games.length > 0 ? `
+                    <div class="games-grid">
+                        ${games.map(game => `
+                            <div class="game-card">
+                                <div class="game-thumbnail" onclick="playGame(${game.id})">
+                                    ${game.thumbnail ? 
+                                        `<img src="${game.thumbnail}" alt="${game.title}">` : 
+                                        getGameIcon(game.category)
+                                    }
+                                    <span class="game-type-badge ${game.type}">${game.type.toUpperCase()}</span>
+                                </div>
+                                <div class="game-info">
+                                    <h3 class="game-title">${game.title}</h3>
+                                    <div class="game-stats">
+                                        <span class="game-stat">👁️ ${formatNumber(game.plays)}</span>
+                                        <span class="game-stat">❤️ ${formatNumber(game.likes)}</span>
+                                    </div>
+                                    <div style="display: flex; gap: 10px; margin-top: 15px">
+                                        <button class="btn btn-primary" style="flex: 1; padding: 8px" onclick="playGame(${game.id})">
+                                            ▶️ Jogar
+                                        </button>
+                                        <button class="btn btn-danger" style="padding: 8px 12px" onclick="deleteGame(${game.id})">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <h3>Nenhum jogo publicado ainda</h3>
+                        <p>Publique seu primeiro jogo e compartilhe com o mundo!</p>
+                        <button class="btn btn-primary" style="margin-top: 20px" onclick="openModal('add-game')">
+                            ➕ Publicar Primeiro Jogo
+                        </button>
+                    </div>
+                `}
+            `;
+        }
+
+        function renderGamePlayer() {
+            const game = DB.getGames().find(g => g.id === state.playingGame);
+            if (!game) return '';
+
+            const isLiked = state.currentUser && game.likedBy && game.likedBy.includes(state.currentUser.id);
+
+            return `
+                <div class="game-player-overlay">
+                    <div class="game-player-header">
+                        <div class="game-player-title">
+                            <button class="btn btn-secondary" onclick="closeGame()">
+                                ← Voltar
+                            </button>
+                            <h2>${game.title}</h2>
+                            <span style="color: var(--text-muted)">por ${game.author}</span>
+                        </div>
+                        <div class="game-player-actions">
+                            <button class="btn ${isLiked ? 'btn-danger' : 'btn-secondary'}" onclick="toggleLike(${game.id})">
+                                ${isLiked ? '❤️' : '🤍'} ${game.likes}
+                            </button>
+                            <button class="btn btn-primary" onclick="toggleFullscreen()">
+                                ⛶ Tela Cheia
+                            </button>
+                        </div>
+                    </div>
+                    <div class="game-frame-container">
+                        <iframe 
+                            id="gameFrame"
+                            class="game-frame" 
+                            ${game.type === 'url' ? 
+                                `src="${game.content}"` : 
+                                `srcdoc="${game.content.replace(/"/g, '&quot;')}"`
+                            }
+                            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                        ></iframe>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderModal() {
+            let content = '';
+            let title = '';
+
+            switch(state.modal) {
+                case 'login':
+                    title = '🔐 Entrar';
+                    content = `
+                        <form onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="loginEmail" required placeholder="seu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <input type="password" id="loginPassword" required placeholder="Sua senha">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%">
+                                Entrar
+                            </button>
+                        </form>
+                        <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
+                            Não tem conta? 
+                            <span style="color: var(--primary); cursor: pointer" onclick="openModal('register')">
+                                Cadastre-se
+                            </span>
+                        </p>
+                    `;
+                    break;
+
+                case 'register':
+                    title = '🚀 Criar Conta';
+                    content = `
+                        <form onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label>Nome de Usuário</label>
+                                <input type="text" id="regUsername" required placeholder="Seu nome de usuário">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="regEmail" required placeholder="seu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <input type="password" id="regPassword" required minlength="6" placeholder="Mínimo 6 caracteres">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%">
+                                Criar Conta
+                            </button>
+                        </form>
+                        <p style="text-align: center; margin-top: 20px; color: var(--text-muted)">
+                            Já tem conta? 
+                            <span style="color: var(--primary); cursor: pointer" onclick="openModal('login')">
+                                Entrar
+                            </span>
+                        </p>
+                    `;
+                    break;
+
+                case 'add-game':
+                    title = '🎮 Publicar Novo Jogo';
+                    content = `
+                        <form onsubmit="handleAddGame(event)">
+                            <div class="form-group">
+                                <label>Título do Jogo</label>
+                                <input type="text" id="gameTitle" required placeholder="Nome do seu jogo">
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea id="gameDesc" required placeholder="Descreva seu jogo..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select id="gameCategory" required>
+                                    ${categories.filter(c => c !== 'Todos').map(c => 
+                                        `<option value="${c}">${c}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Thumbnail URL (opcional)</label>
+                                <input type="url" id="gameThumbnail" placeholder="https://exemplo.com/imagem.jpg">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo do Jogo</label>
+                                <div class="form-tabs">
+                                    <button type="button" class="form-tab active" onclick="switchGameType('url', this)">
+                                        🔗 URL
+                                    </button>
+                                    <button type="button" class="form-tab" onclick="switchGameType('html', this)">
+                                        📝 HTML
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group" id="gameUrlGroup">
+                                <label>URL do Jogo</label>
+                                <input type="url" id="gameUrl" placeholder="https://exemplo.com/meu-jogo">
+                            </div>
+                            <div class="form-group hidden" id="gameHtmlGroup">
+                                <label>Código HTML do Jogo</label>
+                                <textarea id="gameHtml" placeholder="Cole o código HTML completo do seu jogo aqui..." style="min-height: 200px; font-family: monospace"></textarea>
+                            </div>
+                            <input type="hidden" id="gameType" value="url">
+                            <button type="submit" class="btn btn-success" style="width: 100%">
+                                🚀 Publicar Jogo
+                            </button>
+                        </form>
+                    `;
+                    break;
+            }
+
+            return `
+                <div class="modal-overlay" onclick="if(event.target === this) closeModal()">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h2>${title}</h2>
+                            <button class="modal-close" onclick="closeModal()">×</button>
+                        </div>
+                        <div class="modal-body">
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== EVENT HANDLERS ==========
+        function attachEventListeners() {
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown') && state.dropdownOpen) {
+                    closeDropdown();
+                }
+            });
+        }
+
+        function navigate(view) {
+            state.view = view;
+            render();
+        }
+
+        function openModal(modal) {
+            state.modal = modal;
+            render();
+        }
+
+        function closeModal() {
+            state.modal = null;
+            render();
+        }
+
+        function toggleDropdown() {
+            state.dropdownOpen = !state.dropdownOpen;
+            render();
+        }
+
+        function closeDropdown() {
+            state.dropdownOpen = false;
+            render();
+        }
+
+        function updateSearch(query) {
+            state.searchQuery = query;
+            render();
+        }
+
+        function selectCategory(category) {
+            state.selectedCategory = category;
+            render();
+        }
+
+        function switchGameType(type, btn) {
+            document.getElementById('gameType').value = type;
+            document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (type === 'url') {
+                document.getElementById('gameUrlGroup').classList.remove('hidden');
+                document.getElementById('gameHtmlGroup').classList.add('hidden');
+            } else {
+                document.getElementById('gameUrlGroup').classList.add('hidden');
+                document.getElementById('gameHtmlGroup').classList.remove('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = DB.getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                state.currentUser = user;
+                DB.setCurrentUser(user);
+                closeModal();
+                showToast('Login realizado com sucesso! 🎉');
+            } else {
+                showToast('Email ou senha incorretos', 'error');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            const users = DB.getUsers();
+            
+            if (users.find(u => u.email === email)) {
+                showToast('Este email já está cadastrado', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: generateId(),
+                username,
+                email,
+                password,
+                createdAt: Date.now()
+            };
+
+            users.push(newUser);
+            DB.saveUsers(users);
+            state.currentUser = newUser;
+            DB.setCurrentUser(newUser);
+            closeModal();
+            showToast('Conta criada com sucesso! 🎉');
+        }
+
+        function handleAddGame(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('gameType').value;
+            const title = document.getElementById('gameTitle').value;
+            const description = document.getElementById('gameDesc').value;
+            const category = document.getElementById('gameCategory').value;
+            const thumbnail = document.getElementById('gameThumbnail').value;
+            
+            let content = '';
+            if (type === 'url') {
+                content = document.getElementById('gameUrl').value;
+                if (!content) {
+                    showToast('Insira a URL do jogo', 'error');
+                    return;
+                }
+            } else {
+                content = document.getElementById('gameHtml').value;
+                if (!content) {
+                    showToast('Insira o código HTML do jogo', 'error');
+                    return;
+                }
+            }
+
+            const games = DB.getGames();
+            const newGame = {
+                id: generateId(),
+                title,
+                description,
+                type,
+                content,
+                thumbnail,
+                category,
+                author: state.currentUser.username,
+                authorId: state.currentUser.id,
+                plays: 0,
+                likes: 0,
+                likedBy: [],
+                createdAt: Date.now()
+            };
+
+            games.push(newGame);
+            DB.saveGames(games);
+            closeModal();
+            showToast('Jogo publicado com sucesso! 🎮');
+        }
+
+        function playGame(gameId) {
+            const games = DB.getGames();
+            const gameIndex = games.findIndex(g => g.id === gameId);
+            
+            if (gameIndex !== -1) {
+                games[gameIndex].plays++;
+                DB.saveGames(games);
+                state.playingGame = gameId;
+                render();
+            }
+        }
+
+        function closeGame() {
+            state.playingGame = null;
+            render();
+        }
+
+        function toggleLike(gameId) {
+            if (!state.currentUser) {
+                openModal('login');
+                return;
+            }
+
+            const games = DB.getGames();
+            const gameIndex = games.findIndex(g => g.id === gameId);
+            
+            if (gameIndex !== -1) {
+                const game = games[gameIndex];
+                if (!game.likedBy) game.likedBy = [];
+                
+                const likedIndex = game.likedBy.indexOf(state.currentUser.id);
+                if (likedIndex !== -1) {
+                    game.likedBy.splice(likedIndex, 1);
+                    game.likes--;
+                    showToast('Like removido');
+                } else {
+                    game.likedBy.push(state.currentUser.id);
+                    game.likes++;
+                    showToast('Você curtiu este jogo! ❤️');
+                }
+                
+                DB.saveGames(games);
+                render();
+            }
+        }
+
+        function deleteGame(gameId) {
+            if (!confirm('Tem certeza que deseja excluir este jogo?')) return;
+            
+            let games = DB.getGames();
+            games = games.filter(g => g.id !== gameId);
+            DB.saveGames(games);
+            showToast('Jogo excluído');
+            render();
+        }
+
+        function toggleFullscreen() {
+            const iframe = document.getElementById('gameFrame');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            }
+        }
+
+        function logout() {
+            DB.logout();
+            state.currentUser = null;
+            state.dropdownOpen = false;
+            navigate('home');
+            showToast('Você saiu da sua conta');
+        }
+
+        // ========== INIT ==========
+        render();
+    </script>
+</body>
+</html>
